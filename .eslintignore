@@ -1,0 +1,14 @@
+# ignore generate imports
+
+# nuxt and other artefacts
+/node_modules/
+/dist/
+/migrations/
+commitlint.config.js
+knexfile.ts
+
+node_modules
+dist
+public
+.eslintrc.js
+

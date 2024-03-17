@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type MeetingsChat {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  conversation Json?
+}
+
+type MeetingsDate {
+  date     String
+  time     String
+  timezone String
+}
+
+type MeetingsDuration {
+  hours String
+  mins  String
+}
+
+// Generate auto id
+type ProjectsMedia {
+  id        String? @map("_id") @db.ObjectId
+  extension String
+  name      String
+  url       String
+}
+
+model meetings {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  v               Int              @map("__v")
+  chat            MeetingsChat
+  date            MeetingsDate
+  duration        MeetingsDuration
+  host            String
+  invitations_url String
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  parties         Json?
+  passcode        String
+  topic           String
+  user            String           @db.ObjectId
+}
+
+model projects {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  audioSettings String
+  date          String
+  media         ProjectsMedia[]
+  mode          String
+  name          String
+  slug          String
+  user          String          @db.ObjectId
+}
+
+model sessions {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  expires Json?
+
+  @@index([expires], map: "expires_1")
+}
+
+model users {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email    String
+  name     String
+  password String
+  projects String[] @db.ObjectId
+}
+
+model Subscription {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  endpoint String
+  keys     Json // Store the entire keys object as JSON
+}

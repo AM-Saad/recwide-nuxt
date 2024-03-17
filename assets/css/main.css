@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.glass-bg {
+  @apply backdrop-blur-lg bg-gradient-to-bl from-gray-100 to-[#f6f6f6]/0 bg-opacity-30;
+}
+
+.btn {
+  @apply flex items-center justify-center text-center cursor-pointer rounded-full text-sm h-8 min-w-[8rem] px-2 transition-all duration-300 ease-in-out hover:shadow-md shadow;
+}
+
+.btn-big {
+  @apply min-w-[10rem] h-10;
+}
+
+.btn-small {
+  @apply min-w-[5rem] h-8 text-xs;
+}
+
+.btn:hover {
+  @apply shadow-lg;
+}
+
+.services-item {
+  @apply p-2 rounded-xl shadow-md;
+}
+
+.services-item .head {
+  @apply flex items-center mb-2 ml-4 gap-x-3;
+}
+
+.services-item h5 {
+  @apply text-gray-700 font-semibold text-left;
+}
+
+.services-item p {
+  @apply text-gray-500 text-xs text-left ml-4 mb-4 leading-[1.8];
+}
+
+.services-item .icon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center;
+}
+
+.services-item:nth-child(1) .icon {
+  background: linear-gradient(135deg, #d8ffa6 0%, #6cf08f 30%, #06d68f 100%);
+}
+
+.services-item:nth-child(2) .icon {
+  background: linear-gradient(135deg, #fff388 0%, #febc58 30%, #ffa234 100%);
+}
+
+.services-item:nth-child(3) .icon {
+  background: linear-gradient(135deg, #a3ebfa 0%, #6fa6fe 30%, #375aff 100%);
+}
+
+.services-item:nth-child(4) .icon {
+  background: linear-gradient(135deg, #ffbbbb 0%, #fe6061 30%, #f53e6c 100%);
+}
+
+.mode {
+  @apply text-left cursor-pointer rounded-lg p-2 text-sm font-medium flex items-center gap-2;
+}
+
+.mode:hover,
+.mode.active {
+  background-image: linear-gradient(152deg, #00000036, transparent) !important;
+}
+
+.step {
+  @apply py-2 gap-4;
+}
+
+.title {
+  @apply text-2xl font-medium text-gray-600 dark:text-gray-200;
+}
+
+.goBack {
+  @apply text-gray-600 text-sm cursor-pointer dark:text-gray-200;
+}
+
+.form {
+  @apply flex flex-col justify-center rounded
+}
+
+.form input:not(input[type='checkbox']) {
+  @apply border border-gray-200 rounded p-2 w-full my-2 bg-white text-xs;
+}
+
+.hint {
+  @apply text-gray-400 text-sm;
+}
+
+.project-item {
+  @apply relative flex flex-col justify-between shadow p-2 rounded h-20 overflow-hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-zinc-800;
+  }
+
+  .glass-bg {
+    @apply backdrop-blur-lg bg-gradient-to-bl from-[#1a2a363d] to-[#3f545f66];
+  }
+
+  .btn {
+    color: #eee;
+  }
+
+  h1,
+  h2,
+  h3,
+  h5 {
+    color: #fff !important;
+  }
+
+  p:not(.text-red-400, .text-orange-300) {
+    color: #ccc !important;
+  }
+
+  .options-select {
+    @apply text-white;
+  }
+
+  .brands .filter {
+    @apply grayscale-0;
+  }
+
+  .mode:hover,
+  .mode.active {
+    background-image: linear-gradient(152deg, #ffffff36, transparent) !important;
+  }
+
+  .services-item .icon {
+    box-shadow: 0 0 5px gray;
+  }
+}
