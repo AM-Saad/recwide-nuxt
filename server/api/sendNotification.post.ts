@@ -6,7 +6,7 @@ import webPush from 'web-push'
 export default defineEventHandler(async (event) => {
 
     webPush.setVapidDetails(
-        'mailto:yourEmail@example.com',
+        'mailto:abdelrhmanm525@gmail.com',
         process.env.VAPID_PUBLIC_KEY,
         process.env.VAPID_PRIVATE_KEY
     );

@@ -6,7 +6,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useUserStore } from '@/modules/user/store/index.js'
 import { useThumbnails } from '@/modules/user/composables/useThumbnails'
-import Project from '@/types/Project'
+import type Project from '@/types/Project'
 const route = useRoute();
 const { getToken, url } = useUserStore();
 
@@ -69,7 +69,7 @@ const seeked = (e: any) => {
     <div>
         <div class="wrapper">
             <!-- <DashboardNav /> -->
-            <main class="" v-if="project">
+            <main v-if="project" class="">
                 <div class="dashborad-header">
 
                     <router-link to="/projects">
@@ -82,25 +82,29 @@ const seeked = (e: any) => {
 
                 <div v-if="fetching">Loading...</div>
                 <div v-if="!fetching" class="grid grid-cols-4">
-                    <div></div>
+                    <div/>
                     <div class="col-span-3">
 
                         <div class="video-wrapper shadow rounded-lg overflow-hidden flex flex-col justify-between">
-                            <video class="w-full h-full" :src="`${url}/videos/${project.slug}.mp4`" controls
-                                @seeking="seeking" @seeked="seeked"></video>
+                            <video
+class="w-full h-full" :src="`${url}/videos/${project.slug}.mp4`" controls
+                                @seeking="seeking" @seeked="seeked"/>
                         </div>
 
 
-                        <section id="timeline"
+                        <section
+id="timeline"
                             class="p-2 bg-gray-200 my-2 shadow-inner shadow-slate-400 rounded overflow-hidden box-content relative">
-                            <span id="split"
-                                class="absolute h-full w-2 bg-gray-500 z-10 cursor-col-resize hover:bg-slate-400"></span>
+                            <span
+id="split"
+                                class="absolute h-full w-2 bg-gray-500 z-10 cursor-col-resize hover:bg-slate-400"/>
 
 
                             <div class="flex">
-                                <div class="flex h-10" v-for="i in thumbnails">
-                                    <img v-for="thumbnail in i.frames"
-                                        :src="url + '/thumbnails/' + i.name + '/' + thumbnail" alt="" />
+                                <div v-for="i in thumbnails" class="flex h-10">
+                                    <img
+v-for="thumbnail in i.frames"
+                                        :src="url + '/thumbnails/' + i.name + '/' + thumbnail" alt="" >
                                 </div>
                             </div>
                         </section>

@@ -8,16 +8,15 @@
       </div>
 
       <div v-if="status !== 'authenticated'" class="flex gap-5">
-        <router-link class="btn btn-small" to="/auth/signin">
-          Login
-        </router-link>
-
-        <router-link class="btn btn-small bg-theme text-white" to="/auth/signup">
-          Signup
-        </router-link>
+        <router-link class="btn btn-small" to="/auth/signin">Login</router-link>
+        <router-link class="btn btn-small bg-theme text-white" to="/auth/signup">Signup</router-link>
+        <button class="btn btn-small animate-gradient" v-if="!$pwa?.isPWAInstalled"
+          @click="$pwa?.install()">Install</button>
       </div>
 
       <div v-if="status === 'authenticated'" class="flex gap-5">
+        <button class="btn btn-small animate-gradient" v-if="!$pwa?.isPWAInstalled"
+          @click="$pwa?.install()">Install</button>
         <Dropdown />
       </div>
 
@@ -32,16 +31,16 @@
         <div class="footer-social">
           <ul>
             <li>
-              <a href=""><i class="fab fa-facebook-f" /></a>
+              <a><i class="fab fa-facebook-f" /></a>
             </li>
             <li>
-              <a href=""><i class="fab fa-twitter" /></a>
+              <a><i class="fab fa-twitter" /></a>
             </li>
             <li>
-              <a href=""><i class="fab fa-instagram" /></a>
+              <a><i class="fab fa-instagram" /></a>
             </li>
             <li>
-              <a href=""><i class="fab fa-google" /></a>
+              <a><i class="fab fa-google" /></a>
             </li>
           </ul>
           <ul class="flex gap-5 justify-center">
@@ -67,6 +66,7 @@
 <script setup lang="ts">
 import Dropdown from '~/components/ui/Dropdown.vue';
 
+const { $pwa } = useNuxtApp()
 
 const { status } = useAuth()
 

@@ -1,5 +1,7 @@
 <template v-slot="{ toggleForms }">
-  <form method="post" action="/form" autocomplete="off" @submit.prevent="updateInfo()">
+  <form
+method="post" action="/form" autocomplete="off" enctype="application/x-www-form-urlencoded"
+    @submit.prevent="updateInfo()">
     <div class="">
       <h3>Change Info</h3>
       <p v-if="error" class="login-error text-red-500 mt-2">
@@ -10,22 +12,24 @@
       </p>
 
       <div class="form-group">
-        <input type="email" id="login-email-client" name="email" class="form-control"
-          placeholder="Add Your Email Address..." autocomplete="false | unknown-autocomplete-value" v-model="email"
-          tabindex="1" />
+        <input
+id="login-email-client" v-model="email" type="email" name="email"
+          class="form-control" placeholder="Add Your Email Address..." autocomplete="false | unknown-autocomplete-value"
+          tabindex="1" >
       </div>
       <div class="form-group">
-        <input type="nname" id="login-nname-client" name="nname" class="form-control" placeholder="Write Your name..."
-          v-model="name" autocomplete="false | unknown-autocomplete-value" tabindex="2" />
+        <input
+id="login-nname-client" v-model="name" type="nname" name="nname" class="form-control"
+          placeholder="Write Your name..." autocomplete="false | unknown-autocomplete-value" tabindex="2" >
       </div>
 
-      <button tabindex="3" class="btn btn-small btn-success" v-if="!loading" type="submit">
+      <button v-if="!loading" tabindex="3" class="btn btn-small btn-success" type="submit">
         Change
       </button>
-      <button disabled="disabled" class="btn btn-small btn-success" v-if="loading">
+      <button v-if="loading" disabled="disabled" class="btn btn-small btn-success">
         <div class="spinner">
-          <div class="double-bounce1"></div>
-          <div class="double-bounce2"></div>
+          <div class="double-bounce1"/>
+          <div class="double-bounce2"/>
         </div>
       </button>
     </div>

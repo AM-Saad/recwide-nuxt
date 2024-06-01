@@ -20,10 +20,9 @@ export default defineEventHandler(async (event) => {
             }
         })
         if (!project) {
-            return {
-                status: 404,
-                body: { message: 'Project not found' }
-            }
+            return createError({
+                statusCode: 404, statusMessage: 'Project not found'
+            });
         }
 
         const unlinkMedia = await $fetch(`${URL}/user/projects/unlink`, {
@@ -51,9 +50,10 @@ export default defineEventHandler(async (event) => {
             }
         }
     } catch (e) {
-        return {
-            status: 500,
-            body: { message: e.message }
-        }
+        console.log(e)
+        return createError({
+            statusCode: 500, statusMessage: 'Internal Server Error'
+        });
+
     }
 })

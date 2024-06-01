@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { SCENE, AUDIO } from '~/utils/constents';
+import { SCENE, AUDIO } from '~/utils';
 
 
 interface State {

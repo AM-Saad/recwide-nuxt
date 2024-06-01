@@ -1,7 +1,7 @@
 <template>
   <div>
     <component :is="currentComp" v-if="!finished" @switch="switchComponent" @re-record="rerecorde" />
-    <span v-if="msg" class="block text-left text-yellow-600 text-sm p-2"> {{ msg }} </span>
+    <p v-if="msg" class="block text-left text-yellow-600 text-sm p-2" v-html="msg"> </p>
 
     <Final v-if="finished" @re-record="rerecorde" />
   </div>
@@ -13,7 +13,7 @@ import Scene from '~/components/steps/Scene.vue'
 import Options from '~/components/steps/Options.vue'
 import Recording from '~/components/steps/Recording.vue'
 import Final from '~/components/steps/Final.vue'
-import { SCENE } from '~/utils/constents'
+import { SCENE } from '~/utils'
 
 const store = useMainStore()
 const router = useRouter()
@@ -52,7 +52,7 @@ function switchComponent(compName: string, message: string) {
 function rerecorde(compName: string) {
   store.reRecord()
   currentComp.value = components[compName] || components.Scene
-  router.push({ query: { mode: store.mode }, hash: `#${currentComp.value.__name}` })
+  router.push({ query: { mode: SCENE.SCREEN_AND_WEBCAM }, hash: `#SCENE` })
 }
 
 

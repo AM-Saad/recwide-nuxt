@@ -22,6 +22,10 @@
   @apply shadow-lg;
 }
 
+.bg-theme {
+  color: #333 !important;
+}
+
 .services-item {
   @apply p-2 rounded-xl shadow-md;
 }
@@ -84,7 +88,7 @@
 }
 
 .form input:not(input[type='checkbox']) {
-  @apply border border-gray-200 rounded p-2 w-full my-2 bg-white text-xs;
+  @apply border border-gray-200 rounded p-2 w-full my-1 bg-white text-xs;
 }
 
 .hint {
@@ -134,5 +138,30 @@
 
   .services-item .icon {
     box-shadow: 0 0 5px gray;
+  }
+}
+
+.animate-gradient {
+  background: linear-gradient(18deg, #fe9548, #ffb580, #ffcaa6, #fff, #ffcaa6, #ffb580, #fe9548);
+  background-size: 190% 190% !important;
+  animation: gradient-animation 8s ease-in-out infinite alternate both;
+  font-weight: bold;
+  color: #333;
+
+}
+
+
+@keyframes gradient-animation {
+  0% {
+    background-position: right top;
+  }
+
+  50% {
+    background-position: left bottom;
+  }
+
+  100% {
+    background-position: right top;
+
   }
 }

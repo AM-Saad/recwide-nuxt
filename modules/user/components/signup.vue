@@ -1,5 +1,5 @@
 <template>
-    <form class="form" autocomplete="off" @submit.prevent="signup">
+    <form class="form" autocomplete="off" enctype="application/x-www-form-urlencoded" @submit.prevent="signup">
         <div class="">
 
             <h3 class="title">Sign up</h3>
@@ -10,28 +10,31 @@
             </p>
 
             <div class="form-group">
-                <input type="text" id="signup-name-client" name="name" class="form-control"
-                    placeholder="Add Your name..." autocomplete="false | unknown-autocomplete-value"
-                    v-model="state.name" tabindex="1" />
+                <input
+id="signup-name-client" v-model="state.name" type="text" name="name"
+                    class="form-control" placeholder="Add Your name..."
+                    autocomplete="false | unknown-autocomplete-value" tabindex="1" >
             </div>
             <div class="form-group">
-                <input type="email" id="signup-email-client" name="email" class="form-control"
-                    placeholder="Add Your Email Address..." autocomplete="false | unknown-autocomplete-value"
-                    v-model="state.email" tabindex="2" />
+                <input
+id="signup-email-client" v-model="state.email" type="email" name="email"
+                    class="form-control" placeholder="Add Your Email Address..."
+                    autocomplete="false | unknown-autocomplete-value" tabindex="2" >
             </div>
 
             <div class="form-group">
-                <input type="password" id="signup-password-client" name="password" class="form-control"
-                    placeholder="Write Your Password..." v-model="state.password"
-                    autocomplete="false | unknown-autocomplete-value" tabindex="2" />
+                <input
+id="signup-password-client" v-model="state.password" type="password" name="password"
+                    class="form-control" placeholder="Write Your Password..."
+                    autocomplete="false | unknown-autocomplete-value" tabindex="2" >
             </div>
 
 
-            <div class="toggle-forms mb-2" tabindex="4" v-if="!state.loading">
+            <div v-if="!state.loading" class="toggle-forms mb-2" tabindex="4">
                 You already have an account
                 <router-link class="font-bold" to="/login">Login</router-link>
             </div>
-            <button @click.prevent="signup" type="submit" class="btn bg-theme" :disabled="state.loading"> Sign Up
+            <button type="submit" class="btn bg-theme" :disabled="state.loading" @click.prevent="signup"> Sign Up
             </button>
 
         </div>

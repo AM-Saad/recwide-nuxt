@@ -1,10 +1,10 @@
 <template>
-  <div class="video-player w-full h-full relative shadow rounded-md overflow-hidden my-2 p-2 bg-white/80"
-    ref="videomask" id="video-mask">
+  <div id="video-mask" ref="videomask"
+    class="video-player w-full h-full relative shadow rounded-md overflow-hidden my-2 p-2 bg-white/80">
     <div class="grid grid-cols-2 gap-4">
-      <video id="main_video" class="w-full h-full" ref="main_element" @loadedmetadata="videoLoaded"
-        @timeupdate="updateProgress" src=""></video>
-      <video id="cam-recorded-video" class="w-full h-full" ref="secondary_element" src="" muted></video>
+      <video id="main_video" ref="main_element" class="w-full h-full" src="" @loadedmetadata="videoLoaded"
+        @timeupdate="updateProgress" />
+      <video id="cam-recorded-video" ref="secondary_element" class="w-full h-full" src="" muted />
     </div>
     <div id="controls"
       class="inset-1 bg-[#eaeaea57] backdrop-blur-lg flex items-center gap-x-4 h-12 bottom-0 rounded-md text-gray-800">
@@ -21,8 +21,9 @@
       </div>
       <!-- Progress Bar -->
       <div class="progress-bar w-3/5 relative">
-        <input type="range" class="w-full vertical-align rounded h-3 bg-gray-300" id="progress"
-          v-model="controlsState.progress" @input="selectTime" :max="controlsState.duration" min="0">
+        <input id="progress" v-model="controlsState.progress" type="range"
+          class="w-full vertical-align rounded h-3 bg-gray-300" :max="controlsState.duration" min="0"
+          @input="selectTime">
       </div>
       <!-- Volume and Mute -->
       <div class="flex items-center justify-between gap-x-4">
@@ -30,7 +31,7 @@
           <IconsMute v-if="controlsState.muted" />
           <IconsUnmute v-else />
         </button>
-        <input type="range" id="volume" v-model="controlsState.volume" @input="changeVolume" min="0" max="100" />
+        <input id="volume" v-model="controlsState.volume" type="range" min="0" max="100" @input="changeVolume">
       </div>
     </div>
   </div>
@@ -40,8 +41,8 @@
 import VideoTimeline from './VideoTimeline.vue'
 
 const props = defineProps(["allVideos"]);
-let video = ref(null);
-let ready = ref(false)
+const video = ref(null);
+const ready = ref(false)
 
 const secondary_element: Ref<HTMLVideoElement | null> = ref(null)
 const main_element: Ref<HTMLVideoElement | null> = ref(null);
@@ -76,8 +77,9 @@ const addVideosUrl = async (): Promise<boolean> => {
 
 
   for (let n = 0; n < props.allVideos.length; n++) {
-    let vid = props.allVideos[n];
+    const vid = props.allVideos[n];
     const url = vid.url
+    console.log(url)
     if (n == 0) mainElm!.src = url;
     if (n == 1) secondaryElm!.src = url;
   }
@@ -155,12 +157,12 @@ const expandcollapse = (): void => {
 
 
 const getDuration = (url: string, next: any): void => {
-  let _player = new Audio(url);
+  const _player = new Audio(url);
   _player.addEventListener(
     "durationchange",
     function () {
       if (this.duration != Infinity) {
-        let duration = this.duration;
+        const duration = this.duration;
         _player.remove();
         next(duration);
       }
@@ -177,7 +179,7 @@ const getDuration = (url: string, next: any): void => {
 onMounted(async (): Promise<void> => {
 
   try {
-    let isReady = await addVideosUrl();
+    const isReady = await addVideosUrl();
 
     if (isReady) ready.value = true;
 

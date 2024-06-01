@@ -90,7 +90,18 @@ const shareScreen = async (options) => {
     canceled = true;
     emit(
       "canceled",
-      "You need to share your screen to start recording"
+      `<p class="text-orange-300 pt-10 text-lg">You need to share your screen to start recording.</p>
+        <br/>
+       <br/> 
+       Notes: If you are sharing your screen and still see this message, please check your browser settings.
+
+      <br/> If you are using Safari, please make sure you are using Safari 14 or later.
+      <br/>
+      <br/>
+      <p>If you're willing to share the Webcam only, please consider switching to The Webcam Mode.</p>
+
+      <p>Go Back <a class="text-blue-300" href="/recorder?mode=webcam#Scene">Here</a></p>
+       `
     );
   }
 
@@ -208,6 +219,13 @@ onUnmounted(() => {
 
 
 </script>
+<template>
+  <div>
+    <div id="error">{{ states.screenError }}</div>
+  </div>
+</template>
+
+
 <style scoped>
 video {
   width: 70%;
@@ -218,10 +236,3 @@ video {
   border: 1px solid #ccc;
 }
 </style>
-
-
-<template>
-  <div>
-    <div id="error">{{ states.screenError }}</div>
-  </div>
-</template>

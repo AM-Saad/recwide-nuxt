@@ -10,8 +10,9 @@ export default defineNuxtConfig({
     '~/modules/user/module.ts',
     '@pinia/nuxt',
     '@vite-pwa/nuxt',
-    "@nuxt/image"
+    "@nuxt/image",
   ],
+
   future: {
     typescriptBundlerResolution: true,
   },
@@ -22,7 +23,6 @@ export default defineNuxtConfig({
   imports: {
     autoImport: true,
   },
-
   appConfig: {
     // you don't need to include this: only for testing purposes
     buildDate: new Date().toISOString(),
@@ -35,7 +35,6 @@ export default defineNuxtConfig({
     srcDir: sw ? 'public/service-worker' : undefined,
     filename: sw ? 'index.ts' : undefined,
     registerType: 'autoUpdate',
-
     manifest: {
       name: 'Recwide',
       short_name: 'Recwide',
@@ -43,7 +42,7 @@ export default defineNuxtConfig({
       start_url: '/',
       display: 'standalone',
       id: '/',
-      display_override: ['standalone'],
+      display_override: ['standalone', 'minimal-ui', 'fullscreen'],
       description: 'Recwide is a screen, audio, and cam recorder for the web.',
       screenshots: [
         {
@@ -56,7 +55,7 @@ export default defineNuxtConfig({
           src: 'screenshots/mobile.png',
           sizes: '640x360',
           type: 'image/png',
-          // No form_factor specified, or you can explicitly set form_factor: 'mobile'
+          form_factor: 'narrow',
         }
       ],
       icons: [
@@ -74,7 +73,12 @@ export default defineNuxtConfig({
         { src: "icons/512x512.png", sizes: "512x512", type: "image/png" },
         { src: "icons/512x512.png", sizes: "512x512", type: "image/png", purpose: "maskable" }
       ],
-
+      protocol_handlers: [
+        {
+          protocol: 'web+recwide',
+          url: '/web+recwide?type=%s',
+        }
+      ],
       share_target: {
         action: '/share-target',
         method: 'POST',
@@ -90,24 +94,40 @@ export default defineNuxtConfig({
       installPrompt: true,
       // you don't need to include this: only for testing purposes
       // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 3600,
+      periodicSyncForUpdates: 20,
+
 
     },
     devOptions: {
       enabled: true,
-      suppressWarnings: true,
+      suppressWarnings: false,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
     },
+    // workbox: {
+    //   runtimeCaching: [
+    //     {
+    //       urlPattern: /\.(?:png|gif|jpg|jpeg|svg)$/,
+    //       handler: 'CacheFirst',
+    //       options: {
+    //         cacheName: 'image-cache',
+    //         expiration: {
+    //           maxEntries: 100,
+    //           maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+    //         },
+    //       },
+    //     },
+    //   ]
+    // }
   },
   build: {
-    transpile: ['trpc-nuxt']
+    // transpile: ['trpc-nuxt']
   },
   ssr: false,
   css: ['~/assets/css/main.css'],
   typescript: {
-    shim: false
+    shim: false,
   },
   runtimeConfig: {
     public: {

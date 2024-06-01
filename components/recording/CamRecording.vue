@@ -42,7 +42,7 @@ const startCambroadcast = async () => {
 
 
 const startRecordingCam = () => {
-  let options = { mimeType: 'video/webm;codecs=h264' };
+  const options = { mimeType: 'video/webm;codecs=h264' };
   try {
     states.mediaCamRecorder = new MediaRecorder(window.camstream, options);
     window.mediaCamRecorder = states.mediaCamRecorder;
@@ -94,5 +94,5 @@ onUnmounted(() => stopRecordingCam())
 </script>
 
 <template>
-  <br />
+  <br >
 </template>

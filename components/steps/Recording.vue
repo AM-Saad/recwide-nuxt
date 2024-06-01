@@ -148,14 +148,16 @@ watch(recording, (newVal) => {
 <template>
   <div class="containers">
 
-    <Guide v-on:gotit="closeGuide" v-if="showGuide" :show="showGuide" />
+    <Guide v-if="showGuide" :show="showGuide" @gotit="closeGuide" />
 
-    <ScreenRecording v-if="store.mode != SCENE.WEBCAM_ONLY && readyToStart" @ready="screenReady" @canceled="canceled"
-      :recording="recording" :start="start" :finished="store.finished" :resolution="store.currentResolution"
-      @downloadlink="pushScreenFile" @forceStopCam="forceStopCam" />
+    <ScreenRecording
+v-if="store.mode != SCENE.WEBCAM_ONLY && readyToStart" :recording="recording" :start="start"
+      :finished="store.finished" :resolution="store.currentResolution" @ready="screenReady" @canceled="canceled"
+      @downloadlink="pushScreenFile" @force-stop-cam="forceStopCam" />
 
-    <CamRecording v-if="store.mode != SCENE.SCREEN_ONLY && readyToStart" @canceled="canceled" @ready="camReady"
-      :recording="recording" :start="start" :finished="store.finished" :stopCam="stopCam" @downloadlink="pushCamFile"
+    <CamRecording
+v-if="store.mode != SCENE.SCREEN_ONLY && readyToStart" :recording="recording" :start="start"
+      :finished="store.finished" :stop-cam="stopCam" @canceled="canceled" @ready="camReady" @downloadlink="pushCamFile"
       @accessdenied="accessDenied" />
 
   </div>

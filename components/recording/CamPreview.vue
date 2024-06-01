@@ -65,8 +65,8 @@ watch(camGranted, (newVal, oldVal) => {
       Your browser doesn't support the video tag
     </video>
 
-    <div class="loading-cam grid justify-center" v-if="!ready">
-      <img src="@/assets/images/cam_loading.gif" class="mix-blend-multiply block m-auto" alt="loading cam" />
+    <div v-if="!ready" class="loading-cam grid justify-center">
+      <img src="@/assets/images/cam_loading.gif" class="mix-blend-multiply block m-auto" alt="loading cam" >
       <p v-if="camGranted">Cam Preview is loading...</p>
       <div v-if="!camGranted">
         <p class="text-xs text-red-400 my-1 text-center">Cannot access to camera</p>

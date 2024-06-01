@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event)
         const { name, videos, mode, audioSettings, resolution, videotype, date } = body
-        let projectvideos = videos.map((i: any) => ({
+        const projectvideos = videos.map((i: any) => ({
             name: i,
             url: `/videos/${i}`,
             extension: videotype,
@@ -52,19 +52,19 @@ export default defineEventHandler(async (event) => {
             }
         })
 
-        const videoPaths = videos.map((i: string) => `/videos/${i}.mp4`);
-        const outputPath = `/videos/${slug}.mp4`
+        // const videoPaths = videos.map((i: string) => `/videos/${i}.mp4`);
+        // const outputPath = `/videos/${slug}.mp4`
 
-        await $fetch(`${URL}/user/projects/concatenate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                videoPaths: videoPaths,
-                outputPath: outputPath
-            })
-        })
+        // await $fetch(`${URL}/user/projects/concatenate`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         videoPaths: videoPaths,
+        //         outputPath: outputPath
+        //     })
+        // })
 
         await $fetch(`/api/sendNotification`, {
             method: 'POST',

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { defineNuxtModule } from '@nuxt/kit'
 import { resolve, join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'

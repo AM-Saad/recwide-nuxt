@@ -1,5 +1,5 @@
 <template>
-  <form class="form" autocomplete="off" @submit.prevent="login">
+  <form class="form" autocomplete="off" enctype="application/x-www-form-urlencoded" @submit.prevent="login">
     <div class="">
 
       <h3 class="title">Login</h3>
@@ -10,28 +10,31 @@
       </p>
 
       <div class="form-group">
-        <input type="email" id="login-email-client" name="email" class="form-control"
-          placeholder="Add Your Email Address..." autocomplete="false | unknown-autocomplete-value"
-          v-model="state.email" tabindex="1" />
+        <input
+id="login-email-client" v-model="state.email" type="email" name="email"
+          class="form-control" placeholder="Add Your Email Address..."
+          autocomplete="false | unknown-autocomplete-value" tabindex="1" >
       </div>
 
       <div class="form-group">
-        <input type="password" id="login-password-client" name="password" class="form-control"
-          placeholder="Write Your Password..." v-model="state.password"
-          autocomplete="false | unknown-autocomplete-value" tabindex="2" />
+        <input
+id="login-password-client" v-model="state.password" type="password" name="password"
+          class="form-control" placeholder="Write Your Password..."
+          autocomplete="false | unknown-autocomplete-value" tabindex="2" >
       </div>
 
       <div class="form-group flex items-center gap-x-2 my-2">
         <label for="login-rememberMe-client" class=" m-t-3">Remember Me</label>
-        <input class="m-l-3" type="checkbox" id="login-rememberMe-client" name="rememberMe" v-model="state.rememberMe"
-          tabindex="3" />
+        <input
+id="login-rememberMe-client" v-model="state.rememberMe" class="m-l-3" type="checkbox" name="rememberMe"
+          tabindex="3" >
       </div>
 
-      <div class="toggle-forms mb-2" tabindex="4" v-if="!state.loading">
+      <div v-if="!state.loading" class="toggle-forms mb-2" tabindex="4">
         You don't have an account
         <router-link class="font-bold" to="/signup">Signup</router-link>
       </div>
-      <button @click.prevent="login" type="submit" class="btn bg-theme" :disabled="state.loading"> Login </button>
+      <button type="submit" class="btn bg-theme" :disabled="state.loading" @click.prevent="login"> Login </button>
 
     </div>
   </form>

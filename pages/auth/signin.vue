@@ -26,7 +26,9 @@ const handleSubmit = async () => {
 
 
 <template>
-  <form class="form sm:mt-20 mt-4" autocomplete="off" @submit.prevent="handleSubmit">
+  <form
+class="form sm:mt-20 mt-4" autocomplete="off" enctype="application/x-www-form-urlencoded"
+    @submit.prevent="handleSubmit">
     <div class="">
       <h3 class="title">
         Login
@@ -40,21 +42,24 @@ const handleSubmit = async () => {
       </p>
 
       <div class="form-group">
-        <input id="login-email-client" v-model="credentials.username" type="email" name="email" class="form-control"
+        <input
+id="login-email-client" v-model="credentials.username" type="email" name="email" class="form-control"
           placeholder="Add Your Email Address..." autocomplete="false | unknown-autocomplete-value" tabindex="1"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" title="Please enter a valid email address" required />
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" title="Please enter a valid email address" required >
       </div>
 
       <div class="form-group">
-        <input id="login-password-client" v-model="credentials.password" type="password" name="password"
+        <input
+id="login-password-client" v-model="credentials.password" type="password" name="password"
           class="form-control" placeholder="Write Your Password..." autocomplete="false | unknown-autocomplete-value"
-          tabindex="2" />
+          tabindex="2" >
       </div>
 
       <div class="form-group flex items-center gap-x-2 my-2 dark:text-gray-200">
         <label for="login-rememberMe-client">Remember Me</label>
-        <input id="login-rememberMe-client" v-model="credentials.rememberMe" type="checkbox" name="rememberMe"
-          tabindex="3" />
+        <input
+id="login-rememberMe-client" v-model="credentials.rememberMe" type="checkbox" name="rememberMe"
+          tabindex="3" >
       </div>
 
       <div class="toggle-forms mb-2 text-sm dark:text-gray-200" tabindex="4">

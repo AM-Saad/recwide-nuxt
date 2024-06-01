@@ -4,8 +4,8 @@
     <section class="header flex w-full items-center justify-center my-5">
       <div class="header-intro">
         <img class="mx-auto mb-4 w-48  dark:filter dark:invert-[1]" src="~/assets/images/full_logo.png"
-          alt="recwide logo" srcset="" />
-        <p class="text-gray-500 mb-4 text-center text-2xl max-w-md">
+          alt="recwide logo" srcset="">
+        <p class="text-gray-500 mb-4 text-center text-xl max-w-md">
           Screen recorder has never been this easy, free
           and timeless before
         </p>
@@ -16,7 +16,7 @@
           </router-link>
         </div>
       </div>
-      <div class="header-img"></div>
+      <div class="header-img" />
     </section>
     <!-- You can use $pwa directly in templates! -->
     <div v-if="$pwa.needRefresh" class="fixed bottom-2 right-2 p-2 rounded-lg shadow-lg glass-bg z-40">
@@ -31,10 +31,15 @@
     </div>
     <div class="wrapper">
       <section class="flex justify-between flex-wrap gap-3 my-10 brands">
-        <img src="~/assets/images/brands/youtube.png" alt="recwide_youtube" class="h-6 filter grayscale-[1]">
-        <img src="~/assets/images/brands/tiktok.png" alt="recwide_tiktok" class="h-6 filter grayscale-[1]">
-        <img src="~/assets/images/brands/twitch.png" alt="recwide_twitch" class="h-6 filter grayscale-[1]">
-        <img src="~/assets/images/brands/instagram.png" alt="recwide_instagram" class="h-6 filter grayscale-[1]">
+
+        <NuxtImg src="/images/brands/youtube.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_youtube"
+          class="h-6 filter grayscale-[1]" />
+        <NuxtImg src="/images/brands/tiktok.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_tiktok"
+          class="h-6 filter grayscale-[1]" />
+        <NuxtImg src="/images/brands/twitch.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_twitch"
+          class="h-6 filter grayscale-[1]" />
+        <NuxtImg src="/images/brands/instagram.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_instagram"
+          class="h-6 filter grayscale-[1]" />
       </section>
 
       <section id="services" class="my-5 p-5">
@@ -46,13 +51,13 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/free.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/free.png" alt="">
                 </div>
-                <h5>Free</h5>
+                <h3>Free</h3>
               </div>
               <p>
                 You don't need to pay
-                anything, no credit card required.<br /><strong> Enjoy it now</strong>
+                anything, no credit card required.<br><strong> Enjoy it now</strong>
               </p>
             </div>
           </div>
@@ -61,9 +66,9 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="">
                 </div>
-                <h5> Online(No Downlaod Required)</h5>
+                <h3> Online(No Downlaod Required)</h3>
               </div>
               <p>
                 START is all that it takes, however, since it's a PWA you
@@ -77,9 +82,9 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/screen.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/screen.png" alt="">
                 </div>
-                <h5>Flexable Recording</h5>
+                <h3>Flexable Recording</h3>
               </div>
               <p>
                 Whether you want to record screen, record webcam, a browser tab,
@@ -93,9 +98,9 @@
 
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/mic.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/mic.png" alt="">
                 </div>
-                <h5>Audio Options</h5>
+                <h3>Audio Options</h3>
               </div>
               <p>
                 Audio can be recorded simultaneously if you prefer. Choose

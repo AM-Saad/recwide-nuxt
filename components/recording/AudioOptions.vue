@@ -69,11 +69,12 @@ const checkKeyPressed = (e: KeyboardEvent, mode: AUDIO) => {
   <div>
     <div v-if="store.audioSettings" id="modes" class="flex flex-col justify-center md:justify-between flex-wrap gap-5">
       <div v-for="(opt, idx) in options" :key="opt.name">
-        <div class="mode" :class="[{ 'active': opt.isActive }, { none: opt.hide }]"
-          @click="changeSoundOpts(opt.name as AUDIO)" @keydown="checkKeyPressed($event, opt.name as AUDIO)"
-          :tabindex="idx + 1">
+        <div
+class="mode" :class="[{ 'active': opt.isActive }, { none: opt.hide }]"
+          :tabindex="idx + 1" @click="changeSoundOpts(opt.name as AUDIO)"
+          @keydown="checkKeyPressed($event, opt.name as AUDIO)">
           <div class="flex items-center dark:text-gray-100 gap-x-2">
-            <div class="icon h-6 w-6 stroke-1 dark:stroke-slate-50 dark:fill-slate-50 " v-html="opt.icon"> </div>
+            <div class="icon h-6 w-6 stroke-1 dark:stroke-slate-50 dark:fill-slate-50 " v-html="opt.icon"/>
             <span>{{ opt.name }}</span>
           </div>
           <div v-if="opt.needPermissions">
@@ -86,7 +87,8 @@ const checkKeyPressed = (e: KeyboardEvent, mode: AUDIO) => {
     </div>
     <div class="grid mt-5 gap-y-2">
       <label for="resolution" class=" dark:text-gray-200">Resolution</label>
-      <select id="resolution" class="p-2 border rounded-lg text-gray-600 glass-bg" v-model="currentResolution"
+      <select
+id="resolution" v-model="currentResolution" class="p-2 border rounded-lg text-gray-600 glass-bg"
         tabindex="5">
         <option v-for="i in store.resolutions" :key="i.height" :value="i.height">
           {{ i.height }}

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="projects.length > 0" class="content grid g-three p-large">
-      <Project v-for="project in projects" :project="project" :key="project._id" />
+      <Project v-for="project in projects" :key="project._id" :project="project" />
       <router-link to="/recorder" class="project new-project">
         <div class="button">
           Create New Project

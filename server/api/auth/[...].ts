@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
 import type { Session } from 'next-auth'

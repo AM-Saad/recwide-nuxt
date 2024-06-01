@@ -1,12 +1,21 @@
 <script>
 export default {
   name: "Guide",
+  props: ["show"],
   data() {
     return {
       dontShow: false,
     };
   },
-  props: ["show"],
+  watch: {
+    dontShow(val) {
+      if (val == true) {
+        localStorage.setItem("guideDismissed", true);
+      } else {
+        localStorage.setItem("guideDismissed", false);
+      }
+    },
+  },
   created() {
     localStorage.setItem("guideDismissed", false);
   },
@@ -18,15 +27,6 @@ export default {
       this.$emit("gotit");
     },
   },
-  watch: {
-    dontShow(val) {
-      if (val == true) {
-        localStorage.setItem("guideDismissed", true);
-      } else {
-        localStorage.setItem("guideDismissed", false);
-      }
-    },
-  },
 };
 </script>
 
@@ -36,21 +36,26 @@ export default {
     <!-- use the modal component, pass in the prop -->
     <UiModel :show="show" @close="gotit">
       <template #header>
+        <div class="flex flex-col">
 
-        <div class="title font-bold text-xl">Check "Share Audio" Box</div>
-        <div class="desc my-2 text-gray-500 text-sm">
-          Please check "Share Audio" box to record system audio.
+          <div class="title font-bold text-xl">Check "Share Audio" Box</div>
+          <div class="desc my-2 text-gray-500 dark:text-gray-400 text-sm">
+            Please check "Share Audio" box to record system audio.
+          </div>
         </div>
       </template>
       <template #body>
 
-        <video src="@/assets/videos/share-sound.mp4" muted autoplay loop="loop"></video>
+        <video src="@/assets/videos/share-sound.mp4" muted autoplay loop="loop" />
         <div class="flex justify-between gap-3 my-2">
           <div class="flex items-center gap-2">
-            <input @click="dontShow = !dontShow" type="checkbox" name="dontshow" id="dontShow" />
+            <input id="dontShow" type="checkbox" name="dontshow" @click="dontShow = !dontShow">
             <label for="dontShow" class="dark:text-gray-400">Don't Show Again</label>
           </div>
         </div>
+      </template>
+      <template #footer>
+        <button class="btn btn-small bg-theme" @click="gotit">Got it</button>
       </template>
     </UiModel>
   </Teleport>

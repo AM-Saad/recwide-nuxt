@@ -5,12 +5,9 @@ export default defineEventHandler(async (event) => {
 
   const session = await getServerSession(event)
   if (!session) {
-    return {
-      status: 401,
-      body: {
-        message: 'Unauthorized'
-      }
-    }
+    throw createError({
+      statusCode: 401, statusMessage: 'Unauthorized'
+    });
   }
 
   const project = await prisma.projects.findFirst({
@@ -18,11 +15,12 @@ export default defineEventHandler(async (event) => {
       slug: id
     }
   })
-  return {
-    status: 200,
-    body: {
-      message: 'Project index',
-      project
-    }
+  if (!project) {
+    throw createError({
+      statusCode: 404, statusMessage: 'Project not found'
+    });
+
   }
+
+  return project
 })

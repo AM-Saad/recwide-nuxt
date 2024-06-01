@@ -61,14 +61,14 @@ const proceedAnyway = () => emit("proceedAnyway")
             </div>
           </div>
           <div id="icons">
-            <div class="flex gap-x-2 icon mt-2" v-if="!micGranted && !camGranted">
+            <div v-if="!micGranted && !camGranted" class="flex gap-x-2 icon mt-2">
               <IconsMicNotAllowed />
               <IconsCamNotAllowed />
             </div>
-            <div class="flex gap-x-2 icon mt-2" v-if="!micGranted && camGranted">
+            <div v-if="!micGranted && camGranted" class="flex gap-x-2 icon mt-2">
               <IconsMicNotAllowed />
             </div>
-            <div class="flex gap-x-2 icon mt-2" v-if="micGranted && !camGranted">
+            <div v-if="micGranted && !camGranted" class="flex gap-x-2 icon mt-2">
               <IconsCamNotAllowed />
             </div>
           </div>

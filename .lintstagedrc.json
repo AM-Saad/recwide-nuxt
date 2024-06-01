@@ -1,3 +1,0 @@
-{
-  "**/*.ts": ["tsc-files --noEmit --pretty", "yarn lint:fix"]
-}

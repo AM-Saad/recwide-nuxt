@@ -23,13 +23,13 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/free.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/free.png" alt="" >
                 </div>
                 <h5>Free</h5>
               </div>
               <p>
                 You don't need to pay
-                anything, no credit card required.<br /><strong> Enjoy it now</strong>
+                anything, no credit card required.<br ><strong> Enjoy it now</strong>
               </p>
             </div>
           </div>
@@ -38,7 +38,7 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="" >
                 </div>
                 <h5> Online(No Downlaod Required)</h5>
               </div>
@@ -54,7 +54,7 @@
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/screen.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/screen.png" alt="" >
                 </div>
                 <h5>Flexable Recording</h5>
               </div>
@@ -70,7 +70,7 @@
 
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/mic.png" alt="" />
+                  <img class="h-2/4" src="~/assets/images/mic.png" alt="" >
                 </div>
                 <h5>Audio Options</h5>
               </div>
@@ -89,7 +89,7 @@
 <script>
 export default {
 
-  name: "home",
+  name: "Home",
   components: {},
   computed: {},
   created() { },

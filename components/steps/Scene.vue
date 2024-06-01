@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMainStore } from '~/store'
-import { SCENE } from '~/utils/constents';
+import { SCENE } from '~/utils';
 
 const emit = defineEmits(); // Define the emit function
 const store = useMainStore()
@@ -53,7 +53,7 @@ const checkKeyPressed = (e: KeyboardEvent, mode: SCENE): void => {
 }
 
 const fnBrowserDetect = (): string => {
-  let userAgent = navigator.userAgent;
+  const userAgent = navigator.userAgent;
   let browserName;
 
   if (userAgent.match(/chrome|chromium|crios/i)) {

@@ -24,11 +24,12 @@ export default {
       </template>
 
       <template #body>
-        <video class="m-auto block w-11/12 rounded shadow" v-if="(needGuide === 'Microphone')"
-          src="@/assets/videos/allow-mic.mp4" muted autoplay loop="loop"></video>
-        <video class="m-auto block w-11/12 rounded shadow" v-if="needGuide === 'Webcam'"
-          src="@/assets/videos/allow-cam.mp4" muted autoplay loop="loop"></video>
-        <p></p>
+        <video v-if="(needGuide === 'Microphone')" class="m-auto block w-11/12 rounded shadow"
+          src="@/assets/videos/allow-mic.mp4" muted autoplay loop="loop">
+        </video>
+        <video v-if="needGuide === 'Webcam'" class="m-auto block w-11/12 rounded shadow"
+          src="@/assets/videos/allow-cam.mp4" muted autoplay loop="loop">
+        </video>
       </template>
     </UiModel>
   </Teleport>

@@ -1,8 +1,8 @@
 <template>
 
     <button class="mode focus:outline-1 focus:outline-offset-1 outline-slate-100 dark:outline-stone-800"
-        :class="{ 'active': currentMode === mode }" @dblclick="switchComponent('Options', mode)"
-        @click="changeScene(mode)" tabindex="1">
+        :class="{ 'active': currentMode === mode }" tabindex="1" @dblclick="switchComponent('Options', mode)"
+        @click="changeScene(mode)">
         <NuxtImg :src="full_image" :alt="title" :placeholder="[30, 20]" class="h-8 w-8" />
         <h3>{{ title }}</h3>
     </button>
@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { useMainStore } from '~/store'
-import { SCENE } from '~/utils/constents';
+import { SCENE } from '~/utils';
 
 
 const props = defineProps({

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-const emit = defineEmits()
 
 import Signin from '../auth/Signin.vue'
 import Signup from '../auth/Signup.vue';
+const emit = defineEmits()
 const msg = ref('')
 
 const props = defineProps({
@@ -36,16 +36,13 @@ const closeModel = () => {
   <Teleport to="body">
     <!-- use the modal component, pass in the prop -->
     <UiModel :show="props.show" @close="closeModel">
-
       <template #header>
-        <h3 class="text-2xl">{{ currentCompName }}</h3>
+        <h3 class="font-bold text-lg">{{ currentCompName }}</h3>
       </template>
 
       <template #body>
         <component :is="currentComp" @switch="switchComponent" @close="closeModel" />
       </template>
-
-
     </UiModel>
   </Teleport>
 </template>

@@ -21,7 +21,7 @@ export default {
       this.minutes = this.pad(parseInt(this.totalSeconds / 60));
     },
     pad(val) {
-      var valString = val + "";
+      const valString = val + "";
       if (valString.length < 2) {
         return "0" + valString;
       } else {
@@ -31,6 +31,14 @@ export default {
   },
 };
 </script>
+
+<template>
+  <p class="timer">
+    <label id="minutes" ref="minutes">{{ minutes }}</label>
+    <label id="colon">:</label>
+    <label id="seconds" ref="seconds">{{ seconds }}</label>
+  </p>
+</template>
 
 <style scoped>
 .timer {
@@ -49,11 +57,3 @@ export default {
   font-size: 5em;
 }
 </style>
-
-<template>
-  <p class="timer">
-    <label id="minutes" ref="minutes">{{ minutes }}</label>
-    <label id="colon">:</label>
-    <label id="seconds" ref="seconds">{{ seconds }}</label>
-  </p>
-</template>

@@ -4,13 +4,10 @@ import prisma from '~/prisma/utils'
 export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
   if (!session) {
-    return {
-      status: 401,
-      body: {
-        message: 'Unauthorized',
-        projects: []
-      }
-    }
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized'
+    })
   }
 
   const projects = await prisma.projects.findMany({
@@ -18,11 +15,5 @@ export default defineEventHandler(async (event) => {
       user: session.uid
     }
   })
-  return {
-    status: 200,
-    body: {
-      message: 'Project index',
-      projects
-    }
-  }
+  return projects
 })

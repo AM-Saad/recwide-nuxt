@@ -1,407 +1,383 @@
 <script setup lang="ts">
+import { ref, reactive, defineProps, defineEmits } from 'vue';
+import { useMainStore } from '~/store'
+
+const { status } = useAuth()
+
+// Define your component's emits
+const emit = defineEmits(['cancel', 'register', 'submitPorject']);
+const config = useRuntimeConfig()
+const store = useMainStore()
+
+
+type WorkerMessage = {
+  type: string;
+  data: {
+    message: string
+    identifier: string
+    index: number
+    totalChunks: number
+  };
+};
 
 interface SaveProjectData {
-  dontShow: boolean;
-  name: string;
-  socket: any;
+  // Keep only the necessary properties for UI
   uploading: boolean;
   uploadError: boolean;
   uploaded: boolean;
   saving: boolean;
   saved: boolean;
-  fReader: any;
   totalSize: number;
   totalMBSize: number;
   totalMbDone: number;
-  allDone: boolean;
-  currentFile: any;
   currentFileIndex: number;
-  lastPercent: number;
   currentPercent: number;
-  videosNames: any[];
+  videosNames: string[];
+  name: string;
   cancled: boolean;
-  uploadedBytes: number;
-  isReading: boolean;
-  readQueue: any[];
+  error: string | null;
+
 }
-import io from 'socket.io-client'
 
+// Define your project properties as before
+const props = defineProps({
+  videotype: String,
+  videos: Array,
+}) as {
+  videotype: string;
+  videos: string[];
+};
 
-const emit = defineEmits()
-const state = reactive({
-  dontShow: false,
-  name: '',
-  socket: null,
+// Reactive state for upload data
+const state = reactive<SaveProjectData>({
   uploading: false,
   uploadError: false,
   uploaded: false,
   saving: false,
   saved: false,
-  fReader: null,
   totalSize: 0,
   totalMBSize: 0,
   totalMbDone: 0,
-  allDone: false,
-  currentFile: null,
   currentFileIndex: 0,
-  lastPercent: 0,
   currentPercent: 0,
   videosNames: [],
   cancled: false,
-  uploadedBytes: 0,
-  isReading: false,
-  readQueue: [],
-}) as SaveProjectData;
+  name: '',
+  error: null
+});
 
-const props = defineProps({
-  videotype: String,
-  isAuth: Boolean,
-  mode: String,
-  audioSettings: Object,
-  resolution: String,
-  videos: Array,
-  blobs: Array,
-  url: String
-}) as {
-  videotype: string;
-  isAuth: boolean;
-  mode: string;
-  audioSettings: any;
-  resolution: string;
-  videos: any[];
-  blobs: any[];
+
+
+onMounted(() => {
+  // Register for push notifications
+
+  registerNotfification();
+
+  if ('serviceWorker' in navigator) {
+    // Ensure there's a service worker controlling the page
+    if (navigator.serviceWorker.controller) {
+      listenToServiceWorker();
+    } else {
+      // If the page isn't controlled, wait for it to be claimed
+      navigator.serviceWorker.oncontrollerchange = () => {
+        listenToServiceWorker();
+      };
+    }
+  }
+
+});
+
+
+const listenToServiceWorker = () => {
+  navigator.serviceWorker.addEventListener('message', handleSWMessage);
+}
+
+const handleSWMessage = (event: MessageEvent<WorkerMessage>) => {
+  const { type, data } = event.data as WorkerMessage;
+  console.log(type, data);
+  // Handle different types of messages: progress, error, completed
+  switch (type) {
+    case 'progress':
+      // Update currentPercent in state based on the totalChunks and index
+      state.currentPercent = Math.floor((data.index / data.totalChunks) * 100);
+      state.totalMbDone = (data.index * 5) / 100;
+      break;
+    case 'fileComplete':
+      // Handle upload completion
+      console.log('fileComplete', data);
+      state.currentFileIndex++;
+      state.currentPercent = 0;
+      state.videosNames.push(data.identifier);
+      break;
+    case 'error':
+      // Handle an upload error
+      state.uploadError = true;
+      state.error = data.message;
+      break;
+
+    case 'allComplete':
+      state.uploaded = true;
+      state.uploading = false;
+      state.currentPercent = .9999
+      submitPorject();
+      break;
+  }
 };
 
-const socketState = reactive({
-  connected: false,
-  fooEvents: [],
-  barEvents: [],
-});
 
-const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000';
 
-const socket = io(URL, {
-  transports: ['websocket'],
-  upgrade: false,
-  reconnection: false,
-});
+// beforeDestroy() {
+//   // Clean up: remove the event listener if the component is destroyed
+//   navigator.serviceWorker.removeEventListener('message', this.handleSWMessage);
+// },
+// Utility function to convert VAPID key
+function urlBase64ToUint8Array(base64String: any) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
 
-socket.on('more-data', function (data: any): void {
-  updateProgressBar(data.Percent)
-  calcMegabytesDone()
-  handleMoreData(data)
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
 
-});
-
-socket.on('Done', function (): void {
-  if (props.blobs.length > state.currentFileIndex + 1) {
-    console.log('Done');
-
-    setTimeout(() => {
-      state.currentFileIndex = state.currentFileIndex + 1;
-      startUploading();
-    }, 2000);
-
-  } else {
-    state.uploaded = true;
-    state.uploading = false;
-    state.currentPercent = 99
-    state.videosNames.forEach(function (value, i): void {
-      localStorage.removeItem(`video/${i}`);
-    });
-    state.totalMbDone = Math.round(((state.currentPercent / 100.0) * state.currentFile?.size) / 1048576);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
   }
-});
-
-socket.on('error', function (): void {
-  console.log('error');
-  state.uploadError = true;
-});
-
-
-
-const handleMoreData = (data: any): void => {
-
-
-  // Calculate and read the next chunk
-  const nextChunkStart = data.Place * 524288
-  const nextChunkEnd = Math.min(nextChunkStart + 524288, state.currentFile?.size)
-  const newFile = state.currentFile?.slice(nextChunkStart, nextChunkEnd)
-  state.fReader?.readAsArrayBuffer(newFile)
+  return outputArray;
 }
 
 
 
-const startUploading = (): void => {
-  state.uploading = true;
-  state.cancled = false;
+const registerNotfification = async () => {
 
-  const { selectedFile, name } = getReadyToUploadVideo();
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    const permission = await Notification.requestPermission();
 
-  state.videosNames.push(name);
+    if (permission !== 'granted') {
+      throw new Error('Permission not granted for Notification');
+    }
 
-  state.currentFile = selectedFile;
-  state.fReader = new FileReader();
 
-  state.fReader.onload = function (e: any): void {
-    socket.emit('upload', {
-      Name: name,
-      Data: e.target.result,
+
+    console.log('Notification permission granted');
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(config.public.VAPID_PUBLIC_KEY),
     });
-  };
 
-  state.fReader.onerror = (error: any): void => {
-    console.error('Error reading file:', error)
+    // Send the subscription object to the server
+    await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription),
+    });
+
+    console.log('Subscription successful');
+  } catch (error) {
+    console.error('Error during push notification registration:', error);
   }
 
+}
 
-  socket.emit('start', {
-    Name: name,
-    Size: state.currentFile.size,
+
+// Function to start uploading files
+const startUploading = () => {
+  state.error = null;
+  if (!store.blobs.length) return;
+  if (state.name === '') return state.error = "Please enter a project name";
+
+  console.info('Uploading files');
+
+  const files = store.blobs.map((blob, index) => {
+    const converted = new Blob(blob.chunks, { type: `video/${props.videotype}` });
+    const file = new File([converted], `video-${index}.${props.videotype}`, { type: `video/${props.videotype}` });
+    return file;
   });
-};
 
-const getReadyToUploadVideo = () => {
-  const alreadyStarted = localStorage.getItem(`video/${state.currentFileIndex}`);
+  if (navigator.serviceWorker.controller) {
+    console.log('Sending message to service worker');
+    state.uploading = true;
+    navigator.serviceWorker.controller.postMessage({
+      type: 'uploadFiles',
+      files,
+      uploadUrl: `${config.public.SERVER_URL}/user/projects/upload/chunk`,
+      name: state.name
+    }
+    );
 
-  let name;
-
-  if (!alreadyStarted) {
-    name = createVideoNameAndSaveToStorage();
   } else {
-    name = alreadyStarted;
+    console.error('Service Worker not ready');
+    state.error = "Service Worker not ready";
   }
-  let obj: any = props.blobs[state.currentFileIndex];
-  let blob = new Blob(obj.chunks, { type: `video/${props.videotype}` });
-  const selectedFile = new File([blob], name + '.' + props.videotype, {
-    type: `video/${props.videotype}`,
-  });
-  return { selectedFile, name };
 };
 
+const cancel = (e: MouseEvent): void => {
 
+  if (state.uploading || state.saving) return;
 
-const submitPorject = async () => {
-  if (!state.name) return (document.querySelector('.video-error')!.innerHTML = 'Please add project name. ');
-  let bar: any = document.getElementsByClassName('progress-bar')[0];
-  bar.classList.add('done');
-
-  bar.style = `--progress: 1`;
-  state.currentPercent = 100;
-
-  document.getElementById('percent')!.innerHTML = '100';
-  state.totalMbDone = state.totalMBSize;
-
-  state.saving = true;
-  //   $(".file__value").remove();
-  const today = new Date();
-  const date = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
-
-  const payload = {
-    videos: state.videosNames,
-    name: state.name,
-    mode: props.mode,
-    audioSettings: props.audioSettings,
-    resolution: props.resolution,
-    videotype: props.videotype,
-    date: date,
-  };
-
-  const headers = useRequestHeaders(['cookie']) as HeadersInit
-  // const { data: projects, pending } = await useFetch(`/api/projects`,
-  //   {
-  //     method: 'POST' as string,
-  //     body: JSON.stringify(payload),
-  //   })
-  const { data }: any = await $fetch(`/api/projects`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload)
-  })
-
-  console.log(data)
-
-  state.saving = false;
-
-  window.onbeforeunload = null;
-  state.saved = true;
-
-  setTimeout((): void => {
-    emit("finished");
-    // return router.push(`/project/${res.json.projectId}`);
-  }, 100);
-};
-
-
-const updateProgressBar = (percent: any): void => {
-  state.lastPercent = state.lastPercent;
-  state.currentPercent = percent;
-
-  let bar: any = document.getElementsByClassName('progress-bar')[0];
-  if (state.currentPercent >= 0.45) {
-    // $(".box p").addClass("c-b");
-  }
-  bar.style = `--progress: 00.${state.currentPercent}`;
-
-  document.getElementById('percent')!.innerHTML = `${Math.round(state.currentPercent * 100) / 100}`
-};
-const calcMegabytes = (): void => {
-  for (let i = 0; i < props.blobs.length; i++) {
-    const element: any = props.blobs[i];
-    const myFile = new File([props.blobs[i]], element.name + '.' + props.videotype, {
-      type: `video/${props.videotype}`,
-    });
-    state.totalMBSize += myFile.size;
-
-    let obj: any = props.blobs[i];
-    let blob = new Blob(obj.chunks, { type: `video/${props.videotype}` });
-
-    state.totalSize += blob.size;
-  }
-  state.totalMBSize = Math.ceil(state.totalSize / 1048576);
-};
-const calcMegabytesDone = (): void => {
-  let MBDone = Math.round(((state.currentPercent / 100.0) * state.currentFile?.size) / 1048576);
-  const total = state.totalMbDone + MBDone;
-  state.totalMbDone = total;
-};
-
-const createVideoNameAndSaveToStorage = (): string => {
-  var today = new Date();
-  var date = today.getFullYear() + '_' + (today.getMonth() + 1) + '_' + today.getDate();
-  var time = today.getHours() + '_' + today.getMinutes() + '_' + today.getSeconds();
-
-  var random_number = Math.floor(Math.random() * 10);
-
-  let completeName = date + '_' + time + random_number;
-
-  localStorage.setItem(`video/${state.currentFileIndex}`, completeName);
-  return completeName;
-};
-
-const cancel = (): void => {
   emit('cancel');
   state.cancled = true;
 };
 
-const checkBroswerSupport = (): void => {
-  let bar: any = document.getElementsByClassName('progress-bar')[0];
-  bar.style = `--progress: ${0}`;
-  window.addEventListener('load', Ready);
-  calcMegabytes();
 
-  function Ready() {
-    if (window.File && window.FileReader) {
-      //These are the relevant HTML5 objects that we are going to use
-    } else {
-      document.getElementById('UploadArea')!.innerHTML = "Your Browser Doesn't Support The File API Please Update Your Browser";
-    }
+const submitPorject = async () => {
+  state.saving = true;
+  const today = new Date();
+  const date = `${today.getFullYear()}/${(today.getMonth() + 1)}/${today.getDate()}`
+
+  const payload = {
+    videos: state.videosNames,
+    name: state.name,
+    mode: store.mode,
+    audioSettings: store.audioSettings,
+    resolution: store.currentResolution,
+    videotype: props.videotype,
+    date: date
   }
-};
+
+  console.info('Saving project', payload);
+
+  const res = await fetch(`/api/projects`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  })
+
+  const data = await res.json();
+  state.saving = false;
+  state.saved = true;
+
+  console.log('Project Saved !', data);
+
+  // setTimeout(() => {
+  //   // this.$emit("finished");
+  //   return this.$router.push(`/project/${res.json.projectId}`);
+  // }, 100);
+}
+const calcMegabytes = () => {
+  for (let i = 0; i < store.blobs.length; i++) {
+    const element = store.blobs[i];
+    const myFile = new File(
+      [store.blobs[i]],
+      element.name + "." + props.videotype,
+      {
+        type: `video/${props.videotype}`
+      }
+    );
+    state.totalMBSize += myFile.size;
+
+    const obj = store.blobs[i];
+    const blob = new Blob(obj.chunks, { type: `video/${props.videotype}` });
+
+    state.totalSize += blob.size;
+  }
+  state.totalMBSize = Math.ceil(state.totalSize / 1048576);
+}
 
 
-const register = (): void => {
+
+const registerUser = (): void => {
+  console.log('User Registering');
   emit('register');
 };
+
+
+
+// Add other methods as needed, e.g., for handling UI actions
 </script>
 
 <template>
-  <div class="backdrop">
-    <div class="inner">
-      <div class="inner-title">Create New Project</div>
-      <div>
-        <div class="flex justify-between">
-          <div class="mb">
-            <span id="Uploaded" class="none">
-              <span id="mb">{{ state.totalMbDone }}</span>/{{ state.totalMBSize }} MB</span>
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <UiModel :show="true" @close="cancel">
+      <template #header>
+        <h3 class="font-bold text-lg">Create New Project</h3>
+      </template>
+      <template #body>
+
+        <div>
+          <div class="flex justify-between items-center">
+
+            <p id="Uploaded" class="text-gray-700">
+              <span id="mb"> {{ state.totalMbDone }}</span> / {{ state.totalMBSize }} MB
+            </p>
+
+            <div class="text-gray-200 h-8 w-8 rounded-full text-xs bg-gray-700 flex items-center justify-center">
+              <p class="timer" data-from="0" :data-to="state.currentPercent" data-speed="800">
+                <span v-if="!state.uploaded"> {{ state.currentFileIndex }} </span>
+                <span v-if="state.uploaded"> {{ state.currentFileIndex + 1 }} </span> / {{ store.blobs.length }}
+              </p>
+            </div>
           </div>
-          <div class="circulr">
-            <span class="title timer" data-from="0" :data-to="state.currentPercent" data-speed="800"><span
-                v-if="!state.uploaded">{{ state.currentFileIndex }}</span> <span v-if="state.uploaded">{{
-                  state.currentFileIndex + 1 }}</span> /
-              {{ props.blobs.length }}</span>
+
+          <div class="progress-bar relative w-full my-4" :style="'--progress:' + '00.' + state.currentPercent">
+
+            <div class="box h-8 relative w-full m-auto bg-[#eaeaea57]">
+
+              <p :class="{ hidden: state.uploaded }"
+                class="absolute h-full left-0 loading-text text-center text-gray-500 top-[3px] w-full z-10 transition-all">
+                Loading <span id="percent">:0</span>%
+              </p>
+
+              <p :class="{ 'done-text': !state.uploaded }"
+                class="absolute h-full left-0 loading-text text-center text-gray-500 top-[5px] w-full z-10 transition-all">
+                Video('s) Successfully Uploaded 🎉</p>
+
+              <div class="box-front absolute left-0 bottom-0 bg-gray-400 w-full h-2 transition-all duration-1000">
+              </div>
+
+              <div class="box-bottom absolute left-0 bottom-0 blur-sm bg-black/50 w-full h-1">
+              </div>
+
+            </div>
+
           </div>
-        </div>
-        <div class="progress-bar" :style="'--progress:' + '00.' + state.currentPercent">
-          <div class="box">
-            <p :class="{ none: state.uploaded }" class="loading-text">Loading <span id="percent">:0</span>%</p>
-            <p :class="{ 'done-text': !state.uploaded }">Video('s) Successfully Uploaded 🎉</p>
-            <div class="box-front"></div>
-            <div class="box-bottom"></div>
+
+          <div class="mt-2 mb-5">
+            <input id="name" v-model="state.name" type="text" name="name"
+              class="w-full border border-gray-200 rounded-md text-sm px-4 mb-2 h-8 text-center"
+              placeholder="Project Name.." autoComplete="false">
+            <div v-if="state.uploadError || state.error">
+              <p class="text-red-400 text-sm">{{ state.error }}</p>
+            </div>
           </div>
+
         </div>
 
-        <span id="UploadArea"> </span>
-        <div v-if="!state.uploading && !state.saving && state.uploaded && !state.saved">
-          <input type="text" name="name" id="name" class="form-control" placeholder="Add Project Name.."
-            v-model="state.name" autoComplete="false" />
-          <p class="video-error c-r"></p>
+        <div class="flex items-center gap-2 justify-end">
+          <button class="btn btn-small glass-bg" v-if="!state.saved" @click="cancel">Cancel</button>
+
+          <button v-if="!state.uploading && !state.saving && !state.uploaded && status === 'authenticated'"
+            class="btn btn-small bg-theme" @click="startUploading">
+            Upload Videos
+          </button>
+
+          <button v-if="status !== 'authenticated'" class="btn btn-small bg-theme" @click="registerUser">Login To
+            Upload</button>
+
+          <button v-if="state.saved && status === 'authenticated'" class="btn btn-small btn-success">Saved!</button>
+
+          <button v-if="state.saving || state.uploading" class="btn btn-small bg-theme" disabled>
+            <div class="spinner">
+              <div class="double-bounce1">
+              </div>
+              <div class="double-bounce2">
+              </div>
+            </div>
+          </button>
         </div>
-      </div>
-      <div class="flex f-space-between">
-        <button class="btn" @click="cancel">Cancel</button>
-        <button class="btn btn-gradient" @click="startUploading"
-          v-if="!state.uploading && !state.saving && !state.uploaded && props.isAuth">
-          Upload Videos
-        </button>
-        <button class="btn btn-gradient" @click="register" v-if="!isAuth">Login To Upload</button>
-        <button class="btn btn-info" @click="submitPorject"
-          v-if="!state.uploading && !state.saving && state.uploaded && !state.saved">
-          Save Project
-        </button>
-        <button class="btn btn-success" v-if="state.saved && isAuth">Saved!</button>
-        <button class="btn btn-info" disabled v-if="state.saving">
-          <div class="spinner">
-            <div class="double-bounce1"></div>
-            <div class="double-bounce2"></div>
-          </div>
-        </button>
-      </div>
-    </div>
-  </div>
+      </template>
+
+    </UiModel>
+  </Teleport>
 </template>
 
-<style scoped>
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.782);
-  z-index: 99999999;
-}
 
-.inner {
-  background-color: #fff;
-  border-radius: var(--m-radius);
-  border: 1px solid #ccc;
-  padding: var(--m-padding);
-  position: absolute;
-  width: 40%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
 
-.inner-title {
-  font-weight: bold;
-  margin: var(--m-margin) 0;
-  font-size: 22px;
-}
-
-input[type='text'] {
-  height: 80px;
-  margin-top: var(--s-margin);
-  margin-bottom: var(--m-margin);
-}
-
-@media only screen and (max-width: 767px) and (min-width: 320px) {
-  .inner {
-    width: 90%;
-  }
-}
-
+<style>
 #uploads {
   margin: auto;
   display: block;
@@ -437,43 +413,16 @@ input[type='text'] {
   min-height: 40vh;
 }
 
-.circulr {
-  color: #fff;
-  line-height: 50px;
-  height: 35px;
-  width: 35px;
-  background: #000;
-  line-height: 35px;
-  margin-top: 10px;
-  text-align: center;
-  border-radius: 50px;
-  padding: 1px;
-  font-size: 13px;
-}
-
 .progress-bar {
-  --progressbar-color: rgb(255, 255, 255);
-  --progress-color: rgba(104, 255, 149, 1);
   --progress: 0;
-  --box-side-height: 6px;
-  position: relative;
-  width: 100%;
-  height: 75px;
   perspective: 200px;
-  margin: 15px 0;
 }
 
 .progress-bar .box {
-  position: relative;
-  width: 100%;
-  height: 30px;
-  background: var(--progressbar-color);
   transform-style: preserve-3d;
   transform: rotateX(0);
   transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  transform: rotateX(12deg);
-  border-radius: 3px;
-  margin: auto;
+  transform: rotateX(22deg);
 }
 
 .progress-bar.done .box {
@@ -481,32 +430,11 @@ input[type='text'] {
 }
 
 .progress-bar .box-front {
-  position: absolute;
-  background: #b9b8b8;
-  width: 100%;
-  height: 22px;
-  left: 0;
-  bottom: 0;
   transform-origin: center bottom;
   transform: rotateX(95deg);
   transition: transform 1s;
-  border-radius: 3px;
 }
 
-.progress-bar .box p {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  color: #333;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  line-height: 100%;
-  z-index: 99;
-  transition:
-    opacity 1s,
-    visibility 1s;
-}
 
 .progress-bar.done .box p.loading-text {
   opacity: 0;
@@ -519,17 +447,8 @@ input[type='text'] {
 }
 
 .progress-bar .box-bottom {
-  position: absolute;
-  background: #111;
-  opacity: 0.4;
-  width: 100%;
-  height: var(--box-side-height);
-  left: 0;
-  bottom: 0;
   transform-origin: center bottom;
-  transform: translateZ(-30px);
-  transition: transform 1s;
-  filter: blur(10px);
+  transform: translateZ(-20px);
 }
 
 .progress-bar .box::after {
@@ -537,7 +456,7 @@ input[type='text'] {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--progress-color);
+  background: #68ff95;
   transform-origin: top left;
   transform: scaleX(var(--progress));
   transition: transform 0.1s;
@@ -550,44 +469,13 @@ input[type='text'] {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--progress-color);
+  background: #68ff95;
   opacity: 0.3;
   transform-origin: top left;
   transform: scaleX(var(--progress));
   transition: transform 0.1s;
   box-shadow: 0px 0px 20px rgba(100, 255, 121, 0.4);
   border-radius: 3px;
-}
-
-.mb {
-  margin: 10px;
-  font-size: 19px;
-  color: #333;
-}
-
-#UploadButton {
-  border: 0;
-  border-radius: 3px;
-  background-color: #ff9445;
-  box-shadow: 0 2px 2px 0 rgb(0 0 0 / 18%);
-  padding: 0.9375rem 1.0625rem;
-  margin: -0.9375rem -1.0625rem;
-  color: white;
-  cursor: pointer;
-  /* float: right; */
-  display: block;
-  margin: auto;
-}
-
-.footer-copyright {
-  background-color: #ff9445;
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  color: #333;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
 }
 
 @media only screen and (max-width: 767px) and (min-width: 320px) {

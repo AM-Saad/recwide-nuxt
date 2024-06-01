@@ -130,32 +130,34 @@ onUnmounted(() => {
   <div class="step step-scene-select active mt-12">
     <h1 class="title text-left">Audio Options</h1>
 
-    <div class="head mb-5">
-      <button tabindex="7" type="button" class="goBack flex items-center justify-center"
+    <div class="head mb-5 group">
+      <button tabindex="7" type="button"
+        class="goBack flex items-center justify-center relative transform transition-all duration-300 group-hover:-translate-x-2"
         @click="switchComponent('Scene')">
         <IconsArrowback />
         <span class="text-xs">Back To Recording Scene</span>
       </button>
     </div>
 
-    <ModelsHowToAllowAccess @close="showHowToAccessModel = false" :show="showHowToAccessModel" :needGuide="needGuide" />
+    <ModelsHowToAllowAccess :show="showHowToAccessModel" :need-guide="needGuide"
+      @close="showHowToAccessModel = false" />
 
-    <ModelsWarningMissingPermissions @gotit="showMissingPermissionModel = false" :show="showMissingPermissionModel"
-      @proceedAnyway="proceedAnyway" />
+    <ModelsWarningMissingPermissions :show="showMissingPermissionModel" @gotit="showMissingPermissionModel = false"
+      @proceed-anyway="proceedAnyway" />
 
     <div class="grid mb-3 md:grid-cols-2 gap-5">
       <div class="step-cam-preview w-full h-full">
-        <RecordingAudioOptions @openAllowAccess="openHowToAllowAccessModel" />
+        <RecordingAudioOptions @open-allow-access="openHowToAllowAccessModel" />
       </div>
       <RecordingCamPreview v-if="store.mode === SCENE.SCREEN_AND_WEBCAM || store.mode === SCENE.WEBCAM_ONLY"
-        :ready="mediaRequested" v-on:AllowAccess="openHowToAllowAccessModel('Webcam')"
-        @accessGranted="camPreviewInitiated = true" @accessField="camPreviewInitiated = true" />
+        :ready="mediaRequested" @allow-access="openHowToAllowAccessModel('Webcam')"
+        @access-granted="camPreviewInitiated = true" @access-field="camPreviewInitiated = true" />
     </div>
 
-    <button class="btn glass-bg" v-if="canProceed" @click="proceed()" tabindex="6">
+    <button v-if="canProceed" class="btn glass-bg" tabindex="6" @click="proceed()">
       Start Recording
     </button>
-    <button class="btn glass-bg" style="opacity: 0.5" tabindex="6" v-if="!canProceed">
+    <button v-if="!canProceed" class="btn glass-bg" style="opacity: 0.5" tabindex="6">
       Start Recording
     </button>
 

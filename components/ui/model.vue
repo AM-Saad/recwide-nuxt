@@ -2,14 +2,38 @@
 const props = defineProps({
   show: Boolean
 })
+const emit = defineEmits('close')
+
+onMounted(() => {
+  // close on escape key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      emit('close')
+    }
+
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      emit('close')
+
+    }
+  })
+})
+
 </script>
 
 <template>
   <Transition name="modal">
     <div v-if="show" class="modal-mask">
-      <div class="modal-container">
-        <div class="modal-header">
+      <div class="inner absolute left-[50%] top-[50%] p-3 rounded-md shadow-lg bg-white glass-bg
+      transform -translate-x-1/2 -translate-y-1/2 w-96">
+        <div class="modal-header flex items-center justify-between">
           <slot name="header">default header</slot>
+          <button class="modal-default-button dark:text-gray-400 p-1 place-self-start"
+            @click="$emit('close')">X</button>
         </div>
 
         <div class="modal-body">
@@ -18,7 +42,7 @@ const props = defineProps({
 
         <div class="modal-footer">
           <slot name="footer">
-            <button class="btn btn-small bg-theme" @click="$emit('close')">OK</button>
+            <!-- <button class="btn btn-small" @click="$emit('close')">Close</button> -->
           </slot>
         </div>
       </div>
@@ -39,15 +63,9 @@ const props = defineProps({
   transition: opacity 0.3s ease;
 }
 
-.modal-container {
-
-  @apply m-auto p-4 bg-white rounded-md shadow-lg transition-all duration-300 ease-in-out md:w-3/6 w-[90%];
-
-}
 
 .modal-header h3 {
   margin-top: 0;
-  color: #42b983;
 }
 
 .modal-body {
