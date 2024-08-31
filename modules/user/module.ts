@@ -1,4 +1,3 @@
- 
 import { defineNuxtModule } from '@nuxt/kit'
 import { resolve, join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
@@ -14,7 +13,9 @@ const userModule: ModuleDefinition = {
     })
 
     // Auto register composables
-    nuxt.hook('components:dirs', (dirs: any): void => dirs.push(resolve(__dirname, './composables')))
+    nuxt.hook('components:dirs', (dirs) => {
+      dirs.push(resolve(__dirname, './composables'))
+    })
 
     // Auto register pages
     nuxt.hook('pages:extend', (pages): void => {

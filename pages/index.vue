@@ -1,88 +1,128 @@
 <template>
   <div>
     <Title>Recwide - Free Screen Recorder</Title>
-    <section class="header flex w-full items-center justify-center my-5">
-      <div class="header-intro">
-        <img class="mx-auto mb-4 w-48  dark:filter dark:invert-[1]" src="~/assets/images/full_logo.png"
-          alt="recwide logo" srcset="">
-        <p class="text-gray-500 mb-4 text-center text-xl max-w-md">
-          Screen recorder has never been this easy, free
-          and timeless before
-        </p>
-        <div class="flex justify-center items-center">
-          <router-link class="btn btn-big glass-bg" to="/recorder">
-            Start Record For Free
-            <IconsPlay class="text-2xl" />
-          </router-link>
-        </div>
-      </div>
-      <div class="header-img" />
+
+    <section
+      class="header my-5 flex w-full flex-col items-center justify-center"
+    >
+      <img
+        class="mx-auto mb-4 w-48 dark:invert-[1] dark:filter"
+        src="~/assets/images/full_logo.png"
+        alt="recwide logo"
+        srcset=""
+      />
+      <p class="mb-4 max-w-md text-center text-xl text-gray-500">
+        Screen recorder has never been this easy, free and timeless before
+      </p>
+      <router-link
+        class="btn btn-big glass-bg place-self-center"
+        to="/recorder"
+      >
+        Start Record
+        <IconsPlay />
+      </router-link>
     </section>
+
     <!-- You can use $pwa directly in templates! -->
-    <div v-if="$pwa.needRefresh" class="fixed bottom-2 right-2 p-2 rounded-lg shadow-lg glass-bg z-40">
-      <span class="text-sm dark:text-gray-100 my-2 block">
-        New content available,
-        click on reload button to update.
+    <div
+      v-if="$pwa.needRefresh"
+      class="glass-bg fixed bottom-2 right-2 z-40 rounded-lg p-2 shadow-lg"
+    >
+      <span class="my-2 block text-sm dark:text-gray-100">
+        New content available, click on reload button to update.
       </span>
 
-      <button class="btn btn-small glass-bg" @click="$pwa.updateServiceWorker()">
+      <button
+        class="btn btn-small glass-bg"
+        @click="$pwa.updateServiceWorker()"
+      >
         Reload
       </button>
     </div>
     <div class="wrapper">
-      <section class="flex justify-between flex-wrap gap-3 my-10 brands">
-
-        <NuxtImg src="/images/brands/youtube.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_youtube"
-          class="h-6 filter grayscale-[1]" />
-        <NuxtImg src="/images/brands/tiktok.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_tiktok"
-          class="h-6 filter grayscale-[1]" />
-        <NuxtImg src="/images/brands/twitch.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_twitch"
-          class="h-6 filter grayscale-[1]" />
-        <NuxtImg src="/images/brands/instagram.png" :placeholder="[30, 20]" format="webp" alt="alt_recwide_instagram"
-          class="h-6 filter grayscale-[1]" />
+      <section class="brands my-10 flex flex-wrap justify-between gap-3">
+        <NuxtImg
+          src="/images/brands/youtube.png"
+          :placeholder="[30, 20]"
+          format="webp"
+          alt="alt_recwide_youtube"
+          class="h-6 grayscale-[1] filter"
+        />
+        <NuxtImg
+          src="/images/brands/tiktok.png"
+          :placeholder="[30, 20]"
+          format="webp"
+          alt="alt_recwide_tiktok"
+          class="h-6 grayscale-[1] filter"
+        />
+        <NuxtImg
+          src="/images/brands/twitch.png"
+          :placeholder="[30, 20]"
+          format="webp"
+          alt="alt_recwide_twitch"
+          class="h-6 grayscale-[1] filter"
+        />
+        <NuxtImg
+          src="/images/brands/instagram.png"
+          :placeholder="[30, 20]"
+          format="webp"
+          alt="alt_recwide_instagram"
+          class="h-6 grayscale-[1] filter"
+        />
       </section>
 
       <section id="services" class="my-5 p-5">
-        <h2 class="font-bold my-5 text-2xl">Why Choose Recwide</h2>
+        <h2 class="my-5 text-2xl font-bold">Why Choose Recwide</h2>
 
-        <div class="grid sm:grid-cols-2 gap-5">
-
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/free.png" alt="">
+                  <img
+                    src="~/assets/images/free.png"
+                    class="h-2/4"
+                    alt=""
+                    srcset=""
+                  />
                 </div>
                 <h3>Free</h3>
               </div>
               <p>
-                You don't need to pay
-                anything, no credit card required.<br><strong> Enjoy it now</strong>
+                You don't need to pay anything, no credit card required.<br /><strong>
+                  Enjoy it now</strong
+                >
               </p>
             </div>
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="">
+                  <img
+                    class="h-2/4"
+                    src="~/assets/images/nodown.png"
+                    alt=""
+                    srcset=""
+                  />
                 </div>
-                <h3> Online(No Downlaod Required)</h3>
+                <h3>Online(No Downlaod Required)</h3>
               </div>
               <p>
-                START is all that it takes, however, since it's a PWA you
-                could install it to make it available on your computer
+                START is all that it takes, however, since it's a PWA you could
+                install it to make it available on your computer
               </p>
             </div>
-
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/screen.png" alt="">
+                  <img
+class="h-2/4" src="~/assets/images/screen.png"
+alt="" />
                 </div>
                 <h3>Flexable Recording</h3>
               </div>
@@ -93,12 +133,13 @@
             </div>
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
-
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/mic.png" alt="">
+                  <img
+class="h-2/4" src="~/assets/images/mic.png"
+alt="" />
                 </div>
                 <h3>Audio Options</h3>
               </div>
@@ -119,10 +160,7 @@
 const { $pwa } = useNuxtApp()
 
 onMounted(() => {
-  console.log('PWA Plugin:', $pwa)
-  if ($pwa.offlineReady)
-    console.log('App is offline ready')
-  else
-    console.log('App is not offline ready')
+  if ($pwa.offlineReady) console.log("App is offline ready")
+  else console.log("App is not offline ready")
 })
 </script>

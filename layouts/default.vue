@@ -1,54 +1,71 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="max-w-4xl mx-auto px-2 flex flex-col justify-between h-screen">
-    <nav id="nav" class="flex justify-between border p-2 rounded-b-lg border-t-0 glass-bg relative z-20">
+  <div class="mx-auto flex h-screen max-w-4xl flex-col justify-between px-2">
+    <nav
+      id="nav"
+      class="glass-bg relative z-20 flex justify-between rounded-b-lg border border-t-0 p-2"
+    >
       <div class="flex items-center">
         <router-link to="/">
-          <img class="w-28 dark:filter dark:invert-[1]" src="~/assets/images/full_logo.png" alt="recwide-logo">
+          <img
+            class="w-28 dark:invert-[1] dark:filter"
+            src="~/assets/images/full_logo.png"
+            alt="recwide-logo"
+          />
         </router-link>
       </div>
 
       <div v-if="status !== 'authenticated'" class="flex gap-5">
-        <router-link class="btn btn-small" to="/auth/signin">Login</router-link>
-        <router-link class="btn btn-small bg-theme text-white" to="/auth/signup">Signup</router-link>
-        <button class="btn btn-small animate-gradient" v-if="!$pwa?.isPWAInstalled"
-          @click="$pwa?.install()">Install</button>
+        <router-link class="btn btn-small" to="/auth/signIn">
+          Login
+        </router-link>
+        <router-link class="btn btn-small bg-theme text-white" to="/auth/signup"
+          >Signup</router-link
+        >
+        <button @click="() => getSession({ required: true })">
+          Refresh
+         </button>
       </div>
 
       <div v-if="status === 'authenticated'" class="flex gap-5">
-        <button class="btn btn-small animate-gradient" v-if="!$pwa?.isPWAInstalled"
-          @click="$pwa?.install()">Install</button>
-        <Dropdown />
+        <!-- <button
+          v-if="!$pwa?.isPWAInstalled"
+          class="btn btn-small animate-gradient"
+          @click="$pwa?.install()"
+        >
+          Install
+        </button> -->
+        <ui-drop-down />
       </div>
-
     </nav>
 
     <div class="flex-1">
-      <slot />
+      <slot></slot>
     </div>
 
-    <footer class="glass-bg p-2 rounded-t-lg">
+    <footer class="glass-bg rounded-t-lg p-2">
       <div class="footer-wrapper grid">
         <div class="footer-social">
           <ul>
             <li>
-              <a><i class="fab fa-facebook-f" /></a>
+              <a><i class="fab fa-facebook-f"></i></a>
             </li>
             <li>
-              <a><i class="fab fa-twitter" /></a>
+              <a><i class="fab fa-twitter"></i></a>
             </li>
             <li>
-              <a><i class="fab fa-instagram" /></a>
+              <a><i class="fab fa-instagram"></i></a>
             </li>
             <li>
-              <a><i class="fab fa-google" /></a>
+              <a><i class="fab fa-google"></i></a>
             </li>
           </ul>
-          <ul class="flex gap-5 justify-center">
+          <ul class="flex justify-center gap-5">
             <li class="text-lg dark:text-gray-300">
               <a href="/">Support</a>
             </li>
             <li class="text-lg dark:text-gray-300">
-              <router-link to="/about">About</router-link>
+              <router-link to="/about"> About </router-link>
             </li>
             <li class="text-lg dark:text-gray-300">
               <a href="/">Contact </a>
@@ -56,18 +73,18 @@
           </ul>
         </div>
       </div>
-      <p class="text-center my-2 dark:text-gray-300 text-sm">
-        Provided by <a class="underline" href="https://amsaad.cc">Abdelrahman Saad</a>
+      <p class="my-2 text-center text-sm dark:text-gray-300">
+        Provided by
+        <a class="underline" href="https://amsaad.cc">Abdelrahman Saad</a>
       </p>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import Dropdown from '~/components/ui/Dropdown.vue';
+const { data, getSession } = useAuth()
 
-const { $pwa } = useNuxtApp()
+// const { $pwa } = useNuxtApp()
 
 const { status } = useAuth()
-
 </script>

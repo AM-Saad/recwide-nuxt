@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 .glass-bg {
-  @apply backdrop-blur-lg bg-gradient-to-bl from-gray-100 to-[#f6f6f6]/0 bg-opacity-30;
+  @apply bg-opacity-30 bg-gradient-to-bl from-gray-100 to-[#f6f6f6]/0 backdrop-blur-lg;
 }
 
 .btn {
-  @apply flex items-center justify-center text-center cursor-pointer rounded-full text-sm h-8 min-w-[8rem] px-2 transition-all duration-300 ease-in-out hover:shadow-md shadow;
+  @apply flex h-8 min-w-[8rem] cursor-pointer items-center justify-center rounded-full px-2 text-center text-sm shadow transition-all duration-300 ease-in-out hover:shadow-md;
 }
 
 .btn-big {
-  @apply min-w-[10rem] h-10;
+  @apply h-10 min-w-[10rem];
 }
 
 .btn-small {
-  @apply min-w-[5rem] h-8 text-xs;
+  @apply h-8 min-w-[5rem] text-xs;
 }
 
 .btn:hover {
@@ -27,23 +27,23 @@
 }
 
 .services-item {
-  @apply p-2 rounded-xl shadow-md;
+  @apply rounded-xl p-3 shadow-md;
 }
 
 .services-item .head {
-  @apply flex items-center mb-2 ml-4 gap-x-3;
+  @apply mb-2 flex items-center gap-x-2;
 }
 
-.services-item h5 {
-  @apply text-gray-700 font-semibold text-left;
+.services-item h3 {
+  @apply text-left font-semibold text-gray-700;
 }
 
 .services-item p {
-  @apply text-gray-500 text-xs text-left ml-4 mb-4 leading-[1.8];
+  @apply text-left text-xs leading-[1.8] text-gray-500;
 }
 
 .services-item .icon {
-  @apply w-8 h-8 rounded-full flex items-center justify-center;
+  @apply flex h-8 w-8 items-center justify-center rounded-full;
 }
 
 .services-item:nth-child(1) .icon {
@@ -63,7 +63,7 @@
 }
 
 .mode {
-  @apply text-left cursor-pointer rounded-lg p-2 text-sm font-medium flex items-center gap-2;
+  @apply flex cursor-pointer items-center gap-2 rounded-lg p-2 text-left text-sm font-medium;
 }
 
 .mode:hover,
@@ -72,7 +72,7 @@
 }
 
 .step {
-  @apply py-2 gap-4;
+  @apply gap-4 py-2;
 }
 
 .title {
@@ -80,23 +80,23 @@
 }
 
 .goBack {
-  @apply text-gray-600 text-sm cursor-pointer dark:text-gray-200;
+  @apply cursor-pointer text-sm text-gray-600 dark:text-gray-200;
 }
 
 .form {
-  @apply flex flex-col justify-center rounded
+  @apply flex flex-col justify-center rounded;
 }
 
 .form input:not(input[type='checkbox']) {
-  @apply border border-gray-200 rounded p-2 w-full my-1 bg-white text-xs;
+  @apply my-1 w-full rounded border border-gray-200 bg-white p-2 text-xs;
 }
 
 .hint {
-  @apply text-gray-400 text-sm;
+  @apply text-sm text-gray-400;
 }
 
 .project-item {
-  @apply relative flex flex-col justify-between shadow p-2 rounded h-20 overflow-hidden;
+  @apply relative flex h-20 flex-col justify-between overflow-hidden rounded p-2 shadow;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -105,7 +105,7 @@
   }
 
   .glass-bg {
-    @apply backdrop-blur-lg bg-gradient-to-bl from-[#1a2a363d] to-[#3f545f66];
+    @apply bg-gradient-to-bl from-[#1a2a363d] to-[#3f545f66] backdrop-blur-lg;
   }
 
   .btn {
@@ -133,7 +133,11 @@
 
   .mode:hover,
   .mode.active {
-    background-image: linear-gradient(152deg, #ffffff36, transparent) !important;
+    background-image: linear-gradient(
+      152deg,
+      #ffffff36,
+      transparent
+    ) !important;
   }
 
   .services-item .icon {
@@ -142,14 +146,21 @@
 }
 
 .animate-gradient {
-  background: linear-gradient(18deg, #fe9548, #ffb580, #ffcaa6, #fff, #ffcaa6, #ffb580, #fe9548);
+  background: linear-gradient(
+    18deg,
+    #fe9548,
+    #ffb580,
+    #ffcaa6,
+    #fff,
+    #ffcaa6,
+    #ffb580,
+    #fe9548
+  );
   background-size: 190% 190% !important;
   animation: gradient-animation 8s ease-in-out infinite alternate both;
   font-weight: bold;
   color: #333;
-
 }
-
 
 @keyframes gradient-animation {
   0% {
@@ -162,6 +173,5 @@
 
   100% {
     background-position: right top;
-
   }
 }
