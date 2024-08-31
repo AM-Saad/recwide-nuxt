@@ -2,8 +2,8 @@
   <div>
     <h1>Register</h1>
     <input
-v-model="username" class="p-2 m-2 border"
-placeholder="Username"  autocomplete="webauthn"/>
+      v-model="username" class="p-2 m-2 border"
+      placeholder="Username"  autocomplete="webauthn"/>
     <button @click="startRegistaring">Register</button>
   </div>
 </template>

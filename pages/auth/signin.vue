@@ -124,9 +124,9 @@ const demoCredentials = { username: 'test', password: 'hunter2' }
     <div v-if="mappedProviders.length">
 
        <button
-v-for="provider in mappedProviders"
-:key="provider?.id" class="btn btn-small"
-@click="signIn(provider?.id)">
+         v-for="provider in mappedProviders"
+         :key="provider?.id" class="btn btn-small"
+         @click="signIn(provider?.id)">
           Sign in with {{ provider?.name }}
          </button>
       </div>

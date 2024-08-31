@@ -14,13 +14,13 @@
       </p>
       <div class="form-group">
         <input
-          id="signup-name-client"
+         id="signup-name-client"
           v-model="username"
           type="text"
           name="name"
           class="form-control"
           placeholder="Add Your name..."
-          autocomplete="false | unknown-autocomplete-value"
+          autocomplete="false | unknown-autocomplete-value webauthn"
           tabindex="1"
         />
       </div>
@@ -32,7 +32,7 @@
           name="email"
           class="form-control"
           placeholder="Add Your Email Address..."
-          autocomplete="false | unknown-autocomplete-value"
+          autocomplete="false | unknown-autocomplete-value webauthn"
           tabindex="2"
         />
       </div>

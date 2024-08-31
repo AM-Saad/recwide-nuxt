@@ -2,8 +2,8 @@
   <div>
     <h1>Login</h1>
     <input
-v-model="email" placeholder="email"
-autocomplete="webauthn" />
+      v-model="email" placeholder="email"
+      autocomplete="webauthn" />
     <button @click="startAuthenticate">Login</button>
   </div>
 </template>
@@ -39,8 +39,6 @@ import { startAuthentication } from "@simplewebauthn/browser"
          alert('Authentication failed');
        }
 
- // POST the response to the endpoint that calls
-    // @simplewebauthn/server -> verifyAuthenticationResponse()
     const verificationResp = await fetch('/api/passkeys/authenticate/verify', {
       method: 'POST',
       headers: {
@@ -59,35 +57,6 @@ import { startAuthentication } from "@simplewebauthn/browser"
       alert('Authentication failed');
     }
     }
-
-        //  const credential = await navigator.credentials.get({
-        //    publicKey: options,
-        //  });
-
-        //  if (!credential) {
-        //    alert('Authentication failed');
-        //    return;
-        //  }
-        //  const credentialResponse = {
-        //    id: credential.id,
-        //    rawId: this.arrayBufferToBase64(credential.rawId),
-        //    response: {
-        //      authenticatorData: this.arrayBufferToBase64(credential.response.authenticatorData),
-        //      clientDataJSON: this.arrayBufferToBase64(credential.response.clientDataJSON),
-        //      signature: this.arrayBufferToBase64(credential.response.signature),
-        //      userHandle: this.arrayBufferToBase64(credential.response.userHandle),
-        //    },
-        //    type: credential.type,
-        //  };
-
-        //  await fetch('/api/passkeys/authenticate/verify', {
-        //    method: 'POST',
-        //    headers: { 'Content-Type': 'application/json' },
-        //    body: JSON.stringify(credentialResponse),
-        //  });
-
-        //  alert('Authentication successful');
-
 
    },
  };

@@ -9,7 +9,7 @@
       theme-color="#ffffff"
     />
     <VitePwaManifest />
-    <NuxtLoadingIndicator :duration="8000" :color="'#fe9548'" />
+    <NuxtLoadingIndicator :duration="4000" :color="'#fe9548'" />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
