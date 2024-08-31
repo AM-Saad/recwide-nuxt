@@ -7,43 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type MeetingsChat {
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  conversation Json?
-}
-
-type MeetingsDate {
-  date     String
-  time     String
-  timezone String
-}
-
-type MeetingsDuration {
-  hours String
-  mins  String
-}
-
-// Generate auto id
 type ProjectsMedia {
-  id        String? @map("_id") @db.ObjectId
   extension String
   name      String
   url       String
 }
 
-model meetings {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int              @map("__v")
-  chat            MeetingsChat
-  date            MeetingsDate
-  duration        MeetingsDuration
-  host            String
-  invitations_url String
+type SessionsSession {
+  challenge String?
+  cookie    SessionsSessionCookie
+  email     String
+}
+
+type SessionsSessionCookie {
   /// Could not determine type: the field only had null or empty values in the sample set.
-  parties         Json?
-  passcode        String
-  topic           String
-  user            String           @db.ObjectId
+  domain         Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  expires        Json?
+  httpOnly       Boolean
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  originalMaxAge Json?
+  path           String
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  sameSite       Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  secure         Json?
+}
+
+type SubscriptionKeys {
+  auth   String
+  p256dh String
+}
+
+model Subscription {
+  id       String           @id @default(auto()) @map("_id") @db.ObjectId
+  endpoint String
+  keys     SubscriptionKeys
 }
 
 model projects {
@@ -57,24 +56,30 @@ model projects {
   user          String          @db.ObjectId
 }
 
+model publickeycreds {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  backed_up       Boolean
+  passkey_user_id String   @db.ObjectId
+  public_key      Bytes?
+  credentialID    String
+  transports      String[]
+  counter         Int
+}
+
 model sessions {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  expires Json?
+  id      String          @id @map("_id")
+  expires DateTime        @db.Date
+  session SessionsSession
 
   @@index([expires], map: "expires_1")
 }
 
 model users {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  email    String
-  name     String
-  password String
-  projects String[] @db.ObjectId
-}
-
-model Subscription {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  endpoint String
-  keys     Json // Store the entire keys object as JSON
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  credentials     Json?
+  email           String  @unique
+  name            String
+  passkey_user_id String?  @db.ObjectId
+  password        String
+  projects        String[] @db.ObjectId
 }

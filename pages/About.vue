@@ -15,46 +15,61 @@
       </section>
 
       <section id="services" class="my-5 p-5">
-        <h2 class="font-bold my-5 text-2xl">Why Choose Recwide</h2>
+        <h2 class="my-5 text-2xl font-bold">Why Choose Recwide</h2>
 
-        <div class="grid sm:grid-cols-2 gap-5">
-
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/free.png" alt="" >
+                  <img
+                    class="h-2/4"
+                    src="~/assets/images/free.png"
+                    alt=""
+                    srcset=""
+                  />
                 </div>
                 <h5>Free</h5>
               </div>
               <p>
-                You don't need to pay
-                anything, no credit card required.<br ><strong> Enjoy it now</strong>
+                You don't need to pay anything, no credit card required.<br /><strong>
+                  Enjoy it now</strong
+                >
               </p>
             </div>
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/nodown.png" alt="" >
+                  <img
+                    class="h-2/4"
+                    src="~/assets/images/nodown.png"
+                    alt=""
+                    srcset=""
+                  />
                 </div>
-                <h5> Online(No Downlaod Required)</h5>
+                <h5>Online(No Downlaod Required)</h5>
               </div>
               <p>
-                START is all that it takes, however, since it's a PWA you
-                could install it to make it available on your computer
+                START is all that it takes, however, since it's a PWA you could
+                install it to make it available on your computer
               </p>
             </div>
-
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/screen.png" alt="" >
+                  <img
+                    class="h-2/4"
+                    src="~/assets/images/screen.png"
+                    alt=""
+                    srcset=""
+                  />
+                  />
                 </div>
                 <h5>Flexable Recording</h5>
               </div>
@@ -65,12 +80,17 @@
             </div>
           </div>
 
-          <div class="services-item filter relative overflow-hidden  glass-bg">
+          <div class="services-item glass-bg relative overflow-hidden filter">
             <div class="relative z-10">
-
               <div class="head">
                 <div class="icon">
-                  <img class="h-2/4" src="~/assets/images/mic.png" alt="" >
+                  <img
+                    class="h-2/4"
+                    src="~/assets/images/mic.png"
+                    alt=""
+                    srcset=""
+                  />
+                  />
                 </div>
                 <h5>Audio Options</h5>
               </div>
@@ -88,12 +108,8 @@
 
 <script>
 export default {
-
   name: "Home",
-  components: {},
-  computed: {},
-  created() { },
-};
+}
 </script>
 
 <style scoped>
@@ -111,7 +127,7 @@ footer {
   font-size: 20px;
 }
 
-.footer-wrapper>div {
+.footer-wrapper > div {
   margin: var(--l-margin) var(--m-margin);
 }
 

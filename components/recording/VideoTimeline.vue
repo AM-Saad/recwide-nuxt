@@ -1,59 +1,65 @@
 <template>
-    <div class="video-timeline flex items-center gap-1">
-        <div class="current-time">{{ formattedCurrentTime }}</div> /
-        <!-- <div class="progress-bar-container">
+  <div class="video-timeline flex items-center gap-1">
+    <div class="current-time">
+      {{ formattedCurrentTime }}
+    </div>
+    /
+    <!-- <div class="progress-bar-container">
             <div :style="progressBarStyle" class="progress-bar"></div>
         </div> -->
-        <div class="total-duration">{{ formattedTotalDuration }}</div>
+    <div class="total-duration">
+      {{ formattedTotalDuration }}
     </div>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-    props: {
-        total: {
-            type: Number,
-            required: true
-        },
-        current: {
-            type: Number,
-            default: 0
-        }
+  props: {
+    total: {
+      type: Number,
+      required: true
     },
-    computed: {
-        formattedTotalDuration() {
-            return this.formatTime(this.total);
-        },
-        formattedCurrentTime() {
-            return this.formatTime(this.current);
-        },
-        progressBarStyle() {
-            const percentage = (this.current / this.total) * 100;
-            return {
-                width: `${percentage}%`
-            };
-        }
-    },
-    methods: {
-        formatTime(timeInSeconds) {
-            const minutes = Math.floor(timeInSeconds / 60);
-            const seconds = timeInSeconds % 60;
-            return `${minutes}:${seconds < 10 ? '0' : ''}${(seconds).toFixed(0)}`
-        }
+    current: {
+      type: Number,
+      default: 0
     }
+  },
+  computed: {
+    formattedTotalDuration():string {
+      return this.formatTime(this.total)
+    },
+    formattedCurrentTime():string {
+      return this.formatTime(this.current)
+    },
+    progressBarStyle(): { width: string }
+     {
+      const percentage = (this.current / this.total) * 100
+      return {
+        width: `${percentage}%`
+      }
+    }
+  },
+  methods: {
+    formatTime(timeInSeconds:number):string {
+      const minutes = Math.floor(timeInSeconds / 60)
+      const seconds = timeInSeconds % 60
+      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds.toFixed(0)}`
+    }
+  }
 }
 </script>
 
 <style scoped>
 .progress-bar-container {
-    flex-grow: 1;
-    height: 5px;
-    background-color: #ccc;
-    margin: 0 10px;
+  flex-grow: 1;
+  height: 5px;
+  background-color: #ccc;
+  margin: 0 10px;
 }
 
 .progress-bar {
-    height: 100%;
-    background-color: blue;
+  height: 100%;
+  background-color: blue;
 }
 </style>

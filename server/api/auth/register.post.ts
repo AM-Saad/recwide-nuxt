@@ -11,9 +11,13 @@ const userSchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  const result = await readValidatedBody(event, body => userSchema.safeParse(body)) // or `.parse` to directly throw an error
+  const result = await readValidatedBody(event, (body) =>
+    userSchema.safeParse(body)
+  ) // or `.parse` to directly throw an error
   if (!result.success) {
-    event.respondWith(new Response(JSON.stringify(result.error.issues), { status: 422 }))
+    event.respondWith(
+      new Response(JSON.stringify(result.error.issues), { status: 422 })
+    )
   }
   try {
     // Extract user data from request body
@@ -36,7 +40,6 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-
 
     const hashedPassword = bcrypt.hashSync(password, 10)
     // Create a new user in the database
