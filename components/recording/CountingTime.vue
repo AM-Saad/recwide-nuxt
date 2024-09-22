@@ -1,60 +1,63 @@
-<script setup lang="ts">
-const minutes = ref("00")
+<template>
+  <div class="timer">
+    <p>{{ formattedTime }}</p>
+  </div>
+</template>
 
-const seconds = ref("00")
+<script lang="ts" setup>
+import { ref, computed, onBeforeUnmount } from "vue"
 
-const totalSeconds = ref(0)
+// Define reactive references
+const seconds = ref(0)
+const intervalId = ref<number | null>(null)
 
-onMounted(() => {
-  startCounting()
+// Compute formatted time as HH:mm:ss
+const formattedTime = computed(() => {
+  const hours = Math.floor(seconds.value / 3600)
+  const minutes = Math.floor((seconds.value % 3600) / 60)
+  const secs = seconds.value % 60
+
+  const pad = (num: number): string => String(num).padStart(2, "0")
+  return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`
 })
 
-const startCounting = (): void => {
-  setInterval(setTime, 1000)
-}
-
-const setTime = (): void => {
-  totalSeconds.value += 1
-  seconds.value = pad(totalSeconds.value % 60)
-  minutes.value = pad(parseInt(totalSeconds.value / 60))
-}
-
-const pad = (val): string => {
-  const valString = val + ""
-  if (valString.length < 2) {
-    return "0" + valString
-  } else {
-    return valString
+// Function to start the timer
+const startTimer = (): void => {
+  if (!intervalId.value) {
+    intervalId.value = setInterval(() => {
+      seconds.value += 1
+    }, 1000) as unknown as number
   }
 }
 
-onUnmounted(() => {
-  totalSeconds.value = 0
+// Function to stop the timer
+const stopTimer = (): void => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value)
+    intervalId.value = null
+  }
+}
+
+onMounted(() => {
+  startTimer()
+})
+
+// Cleanup on component unmount
+onBeforeUnmount(() => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value)
+  }
 })
 </script>
 
-<template>
-  <p class="timer">
-    <label id="minutes" ref="minutes">{{ minutes }}</label>
-    <label id="colon">:</label>
-    <label id="seconds" ref="seconds">{{ seconds }}</label>
-  </p>
-</template>
-
 <style scoped>
 .timer {
-  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2rem;
 }
-
-#seconds {
-  font-size: 5em;
-}
-
-#minutes {
-  font-size: 5em;
-}
-
-#colon {
-  font-size: 5em;
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  font-size: 1rem;
 }
 </style>

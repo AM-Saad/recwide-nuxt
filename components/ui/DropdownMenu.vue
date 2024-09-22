@@ -2,7 +2,8 @@
   <Menu as="div" class="relative inline-block text-left">
     <div>
       <MenuButton
-        class="inline-flex w-full justify-center gap-x-1.5 rounded-md text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
+        role="button"
+        class="inline-flex w-full border border-transparent justify-center gap-x-1.5 rounded-md text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50 dark:hover:bg-transparent dark:hover:border-white transition-all duration-300 ease-in-out focus-visible:ring-1 ring-black dark:ring-white"
       >
         <div>
           <ul id="top-menu">
@@ -27,15 +28,16 @@
       leave-to-class="transform opacity-0 scale-95"
     >
       <MenuItems
-        class="glass-bg absolute right-0 z-10 w-56 origin-top-right overflow-hidden rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="glass-bg absolute right-0 z-10 w-56 origin-top-right overflow-hidden rounded-md shadow-lg ring-1 ring-black dark:ring-white ring-opacity-5 focus:outline-none"
       >
         <div class="overflow-hidden">
           <MenuItem v-slot="{ active }">
             <router-link
               to="/projects"
+              tabindex="1"
               :class="[
                 active
-                  ? 'bg-gray-100/50 text-gray-900 dark:text-gray-300'
+                  ? 'text-gray-900 dark:text-gray-300 bg-gray-200 dark:bg-slate-600'
                   : 'text-gray-700 dark:text-gray-200',
                 'block px-4 py-2 text-sm',
               ]"
@@ -47,9 +49,10 @@
           <MenuItem v-slot="{ active }">
             <button
               type="button"
+              tabindex="2"
               :class="[
                 active
-                  ? 'bg-gray-100/50 text-gray-900 dark:text-gray-300'
+                  ? 'text-gray-900 dark:text-gray-300 bg-gray-200 dark:bg-slate-600'
                   : 'text-gray-700 dark:text-gray-200',
                 'block w-full px-4 py-2 text-left text-sm',
               ]"
@@ -70,6 +73,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue"
 const { signOut } = useAuth()
 
 const logout = async (): Promise<void> => {
-  await signOut()
+  await signOut({ callbackUrl: "/logout" })
 }
 </script>

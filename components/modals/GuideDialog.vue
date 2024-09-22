@@ -1,38 +1,32 @@
 <script setup lang="ts">
-
 defineProps({
   show: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 const dontShow = ref(false)
 
-const emit = defineEmits(['gotit'])
+const emit = defineEmits(["gotit"])
 
-
-const gotit = ():void => {
-   if (dontShow.value) {
-      localStorage.setItem('guideDismissed', "true")
-   } else {
-      localStorage.setItem('guideDismissed', "false")
-   }
-  emit('gotit')
+const gotit = (): void => {
+  if (dontShow.value) {
+    localStorage.setItem("guideDismissed", "true")
+  } else {
+    localStorage.setItem("guideDismissed", "false")
+  }
+  emit("gotit")
 }
-
-
 </script>
 
 <template>
   <Teleport to="body">
     <!-- use the modal component, pass in the prop -->
-    <UiDialogModal
-:show="show"
-@close="gotit">
+    <UiDialogModal :show="show" @close="gotit">
       <template #header>
         <div class="flex flex-col">
-          <div class="title text-xl font-bold"> Check "Share Audio" Box </div>
+          <div class="title text-xl font-bold">Check "Share Audio" Box</div>
           <div class="desc my-2 text-sm text-gray-500 dark:text-gray-400">
             Please check "Share Audio" box to record system audio.
           </div>
@@ -60,27 +54,25 @@ const gotit = ():void => {
         </div>
       </template>
       <template #footer>
-        <button
-class="btn btn-small bg-theme"
-@click="gotit"> Got it </button>
+        <button class="btn btn-small bg-theme" @click="gotit">Got it</button>
       </template>
     </UiDialogModal>
   </Teleport>
 </template>
 
 <style scoped>
-  .inner video {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    box-shadow: 0 0 6px -1px #999;
-    padding: 12px;
-    border-radius: 10px;
-  }
+.inner video {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  box-shadow: 0 0 6px -1px #999;
+  padding: 12px;
+  border-radius: 10px;
+}
 
-  @media only screen and (max-width: 767px) and (min-width: 320px) {
-    .inner {
-      width: 90%;
-    }
+@media only screen and (max-width: 767px) and (min-width: 320px) {
+  .inner {
+    width: 90%;
   }
+}
 </style>

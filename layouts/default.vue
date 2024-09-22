@@ -14,28 +14,23 @@
           />
         </router-link>
       </div>
-
       <div v-if="status !== 'authenticated'" class="flex gap-5">
-        <router-link class="btn btn-small" to="/auth/signIn">
+        <router-link class="btn btn-small bg-white" to="/auth/signIn">
           Login
         </router-link>
         <router-link class="btn btn-small bg-theme text-white" to="/auth/signup"
           >Signup</router-link
         >
-        <button @click="() => getSession({ required: true })">
-          Refresh
-         </button>
       </div>
 
       <div v-if="status === 'authenticated'" class="flex gap-5">
         <!-- <button
-          v-if="!$pwa?.isPWAInstalled"
           class="btn btn-small animate-gradient"
-          @click="$pwa?.install()"
+          @click="$pwa.install()"
         >
           Install
         </button> -->
-        <ui-drop-down />
+        <ui-dropdown-menu />
       </div>
     </nav>
 
@@ -61,13 +56,13 @@
             </li>
           </ul>
           <ul class="flex justify-center gap-5">
-            <li class="text-lg dark:text-gray-300">
+            <li class="dark:text-gray-300">
               <a href="/">Support</a>
             </li>
-            <li class="text-lg dark:text-gray-300">
+            <li class="dark:text-gray-300">
               <router-link to="/about"> About </router-link>
             </li>
-            <li class="text-lg dark:text-gray-300">
+            <li class="dark:text-gray-300">
               <a href="/">Contact </a>
             </li>
           </ul>
@@ -82,9 +77,8 @@
 </template>
 
 <script setup lang="ts">
-const { data, getSession } = useAuth()
-
-// const { $pwa } = useNuxtApp()
-
+const { $pwa } = useNuxtApp()
+console.log("pwa", $pwa)
 const { status } = useAuth()
+console.log("status", status)
 </script>

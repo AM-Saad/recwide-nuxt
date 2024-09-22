@@ -1,10 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth" })
-const headers = useRequestHeaders(["cookie"]) as HeadersInit
-const { data: projects } = await useLazyFetch("/api/projects", {
-  headers,
-  transform: (_data) => _data,
+definePageMeta({
+  auth: true,
 })
+const { data: projects, status } = await useLazyFetch("/api/projects")
 const rawProjects = toRaw(projects)
 </script>
 
@@ -17,20 +15,23 @@ const rawProjects = toRaw(projects)
       >
     </div>
 
+    <div v-if="status === 'pending'" class="text-center dark:text-gray-400">
+      Loading...
+    </div>
+
     <div
-      v-if="rawProjects?.length"
+      v-if="status === 'success' && rawProjects && rawProjects?.length > 0"
       class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
     >
-      <div
-v-for="(project, index) in rawProjects"
-:key="index">
+      <div v-for="(project, index) in rawProjects" :key="index">
         <project-card :project="project" />
       </div>
     </div>
-    <div
-v-if="!rawProjects?.length"
-class="text-center dark:text-gray-400">
-      No projects found!
-    </div>
+  </div>
+  <div
+    v-if="status === 'success' && rawProjects?.length === 0"
+    class="text-center dark:text-gray-400"
+  >
+    No projects found!
   </div>
 </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useMainStore } from "~/store"
-import { SCENE } from "~/utils"
+import { SCENE, STEPS } from "~/utils"
 
 const store = useMainStore()
-const emit = defineEmits(["switch"])
+const emit = defineEmits<{ (event: "switch", component: STEPS): void }>()
 
 const mediaRequested = ref(false)
 const showMissingPermissionModel: Ref<boolean> = ref(false)
@@ -49,7 +49,7 @@ function openHowToAllowAccessModel(reqGuide: string): void {
   showHowToAccessModel.value = true
 }
 
-function switchComponent(comp: string): void {
+function switchComponent(comp: STEPS): void {
   emit("switch", comp)
 }
 
@@ -57,7 +57,7 @@ function proceed(): void {
   if (missingPermissionsConfirmed.value) {
     showMissingPermissionModel.value = true
   } else {
-    emit("switch", "Recording")
+    emit("switch", STEPS.RECORD)
   }
 }
 
@@ -70,18 +70,18 @@ function proceedAnyway(): void {
 
   if (store.mode === SCENE.SCREEN_AND_WEBCAM && !store.camGranted) {
     store.changeMode(SCENE.SCREEN_ONLY)
-    emit("switch", "Recording")
+    emit("switch", STEPS.RECORD)
   }
 
   if (store.mode != SCENE.SCREEN_ONLY && store.camGranted) {
-    emit("switch", "Recording")
+    emit("switch", STEPS.RECORD)
   }
 
   if (
     store.mode == SCENE.SCREEN_ONLY &&
     (!store.micGranted || !store.camGranted)
   ) {
-    emit("switch", "Recording")
+    emit("switch", STEPS.RECORD)
   }
 }
 
@@ -100,7 +100,7 @@ onMounted(async () => {
   }
 })
 
-const requestUserMedia = async ():Promise<void> => {
+const requestUserMedia = async (): Promise<void> => {
   console.log("Requesting User Media")
   try {
     await navigator.mediaDevices.getUserMedia({
@@ -116,10 +116,10 @@ const requestUserMedia = async ():Promise<void> => {
     missingPermissionsConfirmed.value = false
     mediaRequested.value = true
   } catch (error) {
-    const { state, granted: camGranted } = await checkPermission(
+    const { state, granted: camGranted } = await usePermissionStatus(
       "camera" as PermissionName,
     )
-    const { state: micState, granted: micGranted } = await checkPermission(
+    const { state: micState, granted: micGranted } = await usePermissionStatus(
       "microphone" as PermissionName,
     )
     if (state === "denied" || micState === "denied") {
@@ -135,8 +135,10 @@ const requestUserMedia = async ():Promise<void> => {
 
 onUnmounted(() => {
   try {
-    window.camstream.getTracks().forEach((track) => track.stop())
-    window.boradcast.getTracks().forEach((track) => track.stop())
+    if (window.screenStream)
+      window.screenStream.getTracks().forEach((track) => track.stop())
+    if (window.camStream)
+      window.camStream.getTracks().forEach((track) => track.stop())
   } catch (error) {
     console.error("Error stopping broadcast", error)
     return
@@ -153,22 +155,22 @@ onUnmounted(() => {
         tabindex="7"
         type="button"
         class="goBack relative flex transform items-center justify-center transition-all duration-300 group-hover:-translate-x-2"
-        @click="switchComponent('Scene')"
+        @click="switchComponent(STEPS.SCENE)"
       >
-        <IconsArrowback />
+        <icons-arrow-back />
         <span class="text-xs">Back To Recording Scene</span>
       </button>
     </div>
 
-    <ModalsHowToAllowAccess
+    <modals-how-to-allow-access
       :show="showHowToAccessModel"
       :need-guide="needGuide"
       @close="showHowToAccessModel = false"
     />
 
-    <ModalsWarningMissingPermissions
+    <modals-warning-missing-permissions
       :show="showMissingPermissionModel"
-      @gotit="showMissingPermissionModel = false"
+      @close="showMissingPermissionModel = false"
       @proceed-anyway="proceedAnyway"
     />
 
@@ -190,18 +192,15 @@ onUnmounted(() => {
 
     <button
       v-if="canProceed"
-      class="btn glass-bg"
+      class="btn bg-theme"
       tabindex="6"
       @click="proceed()"
     >
       Start Recording
     </button>
     <button
-      v-if="!canProceed"
-      class="btn glass-bg"
-      style="opacity: 0.5"
-      tabindex="6"
-    >
+v-if="!canProceed" class="btn bg-theme opacity:50"
+tabindex="6">
       Start Recording
     </button>
   </div>

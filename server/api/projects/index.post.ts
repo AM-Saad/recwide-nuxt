@@ -1,6 +1,6 @@
 // import { z } from 'zod'
-import { getServerSession } from '#auth'
-import prisma from '~/prisma/utils'
+import { getServerSession } from "#auth"
+import prisma from "~/prisma/utils"
 
 // const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:8000'
 
@@ -21,9 +21,9 @@ export default defineEventHandler(async (event) => {
     return {
       status: 401,
       body: {
-        message: 'Unauthorized',
-        projects: []
-      }
+        message: "Unauthorized",
+        projects: [],
+      },
     }
   }
 
@@ -33,12 +33,12 @@ export default defineEventHandler(async (event) => {
     const projectvideos = videos.map((i: unknown) => ({
       name: i,
       url: `/videos/${i}`,
-      extension: videotype
+      extension: videotype,
     }))
 
     const slug = name
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/[^\w-]/g, '') // Remove non-alphanumeric, non-hyphen, and non-underscore characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/[^\w-]/g, "") // Remove non-alphanumeric, non-hyphen, and non-underscore characters
       .toLowerCase() // Convert to lowercase
     await prisma.projects.create({
       data: {
@@ -48,35 +48,33 @@ export default defineEventHandler(async (event) => {
         audioSettings: audioSettings,
         media: projectvideos,
         date: date,
-        user: session.uid as string // Type assertion to treat session.uid as a string
-      }
+        user: session.uid as string, // Type assertion to treat session.uid as a string
+      },
     })
 
     const response = await $fetch(`/api/sendNotification`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        title: 'Project created',
-        message: `Your project ${name} has been created successfully`
-      })
+        title: "Project created",
+        message: `Your project ${name} has been created successfully`,
+      }),
     })
-    console.log(response)
 
     return {
       status: 200,
       body: {
-        message: 'Project index'
-      }
+        message: "Project index",
+      },
     }
   } catch (error) {
-    console.log(error)
     return {
       status: 500,
       body: {
-        message: 'Internal server error'
-      }
+        message: "Internal server error",
+      },
     }
   }
 })

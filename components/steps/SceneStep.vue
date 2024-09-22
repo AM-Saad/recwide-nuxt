@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMainStore } from "~/store"
-import { SCENE } from "~/utils"
+import { SCENE, STEPS } from "~/utils"
 
 const emit = defineEmits(["switch", "reRecord"])
 const store = useMainStore()
@@ -71,7 +71,7 @@ const handleKeyDown = (e: KeyboardEvent): void =>
   checkKeyPressed(e, mode.value as SCENE)
 
 onMounted(() => {
-  emit("reRecord")
+  emit("reRecord", STEPS.SCENE)
 
   const browserName = fnBrowserDetect()
   if (browserName === "chrome") {
@@ -84,14 +84,14 @@ onMounted(() => {
   }
 
   try {
-    if (window.camstream) {
-      window.camstream
+    if (window.camStream) {
+      window.camStream
         .getTracks()
         .forEach((track: MediaStreamTrack): void => track.stop())
     }
 
-    if (window.boradcast) {
-      window.boradcast
+    if (window.broadcast) {
+      window.broadcast
         .getTracks()
         .forEach((track: MediaStreamTrack): void => track.stop())
     }
@@ -120,6 +120,7 @@ onUnmounted(() => {
           image="both.svg"
           title="Screen & Webcam"
           :mode="SCENE.SCREEN_AND_WEBCAM"
+          tabindex="1"
           @switch="switchComponent"
         />
 
@@ -127,6 +128,7 @@ onUnmounted(() => {
           image="screen.svg"
           title="Screen Only"
           :mode="SCENE.SCREEN_ONLY"
+          tabindex="2"
           @switch="switchComponent"
         />
 
@@ -134,6 +136,7 @@ onUnmounted(() => {
           image="cam.svg"
           title="Webcam Only"
           :mode="SCENE.WEBCAM_ONLY"
+          tabindex="3"
           @switch="switchComponent"
         />
       </div>
@@ -141,8 +144,8 @@ onUnmounted(() => {
 
     <button
       tabindex="4"
-      class="btn glass-bg mt-3"
-      @click="switchComponent('Options')"
+      class="btn bg-theme mt-3"
+      @click="switchComponent(STEPS.AUDIO)"
     >
       Next Step
     </button>

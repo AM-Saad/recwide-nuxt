@@ -66,12 +66,10 @@ const deleteProject = async (e: Event, id: string): Promise<void> => {
           </div>
         </div>
 
-        <div v-if="pending">Loading...</div>
-
         <div class="grid md:grid-flow-col gap-4">
           <div
             v-for="i in rawProject.media"
-            :key="i._id"
+            :key="i.name + i.url"
             class="video-wrapper shadow rounded-lg overflow-hidden flex flex-col gap-2 justify-between bg-white/50 dark:bg-black/30"
           >
             <video

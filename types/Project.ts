@@ -1,19 +1,17 @@
-interface Media {
+export interface Media {
   name: string
   url: string
-  _id: string
+  id: string
   extension: string
 }
 
-interface Project {
+export interface Project {
   audioSettings: string
   date: string
   mode: string
   name: string
   slug: string
   user: string
-  _id: string
+  id: string
   media: Media[]
 }
-
-export default Project

@@ -73,7 +73,7 @@
       </button>
       <button
         v-if="loading"
-        disabled="disabled"
+        :disabled="loading"
         class="btn btn-small btn-success"
       >
         <div class="spinner">

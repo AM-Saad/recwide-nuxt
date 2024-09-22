@@ -1,25 +1,17 @@
-declare module "next-auth" {
-  interface Session {
-    uid?: string // Assuming uid is a string and optional
-    challenge?: string
-    email?: string
-  }
-}
-
 declare module "web-push"
-
+declare module "nuxt-auth"
 declare module "socket.io-client"
 declare module "bcryptjs"
 interface Window {
-  camstream: MediaStream
-  boradcast: MediaStream
+  camStream?: MediaStream
+  broadcast?: MediaStream
   mediaCamRecorder: MediaRecorder
-  screenStream: MediaStream
-  audioCtx: AudioContext
+  screenStream?: MediaStream
+  audioCtx?: AudioContext
 }
 
 // extend tha blob interface to add chunks and name properties
 declare interface Blob {
-  chunks: unknown[]
+  chunks: BlobPart[]
   name: string
 }

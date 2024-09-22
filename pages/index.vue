@@ -15,7 +15,7 @@
         Screen recorder has never been this easy, free and timeless before
       </p>
       <router-link
-        class="btn btn-big glass-bg place-self-center"
+        class="btn btn-big bg-theme place-self-center"
         to="/recorder"
       >
         Start Record
@@ -107,11 +107,13 @@
                     srcset=""
                   />
                 </div>
-                <h3>Online(No Downlaod Required)</h3>
+                <h3>
+                  Online <span class="text-xs">( No Download Required )</span>
+                </h3>
               </div>
               <p>
                 START is all that it takes, however, since it's a PWA you could
-                install it to make it available on your computer
+                install it to make it available on your device.
               </p>
             </div>
           </div>
@@ -121,10 +123,12 @@
               <div class="head">
                 <div class="icon">
                   <img
-class="h-2/4" src="~/assets/images/screen.png"
-alt="" />
+                    class="h-2/4"
+                    src="~/assets/images/screen.png"
+                    alt="screen-icon"
+                  />
                 </div>
-                <h3>Flexable Recording</h3>
+                <h3>Flexible Recording</h3>
               </div>
               <p>
                 Whether you want to record screen, record webcam, a browser tab,
@@ -138,8 +142,10 @@ alt="" />
               <div class="head">
                 <div class="icon">
                   <img
-class="h-2/4" src="~/assets/images/mic.png"
-alt="" />
+                    class="h-2/4"
+                    src="~/assets/images/mic.png"
+                    alt="mic-icon"
+                  />
                 </div>
                 <h3>Audio Options</h3>
               </div>
@@ -156,6 +162,13 @@ alt="" />
 </template>
 
 <script setup>
+definePageMeta({
+  title: "Recwide - Free Screen Recorder",
+  description:
+    "Screen recorder has never been this easy, free and timeless before",
+  image: "/images/og/recwide.png",
+  auth: false,
+})
 // If you want to use it in setup, import from the nuxtApp.
 const { $pwa } = useNuxtApp()
 

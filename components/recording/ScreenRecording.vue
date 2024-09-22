@@ -1,26 +1,23 @@
 <script setup lang="ts">
 import { useMainStore } from "~/store"
 
+interface Props {
+  start: boolean
+  recording: boolean
+}
 type Options = {
   video?: { video: { width: number; height: number }; audio: boolean }
   audio?: { audio: boolean }
 }
 
-const emit = defineEmits(["ready", "canceled", "downloadlink", "forceStopCam"])
+const emit = defineEmits<{
+  (event: "ready" | "forceStopCam"): void
+  (event: "canceled", msg: string): void
+  (event: "screenBlobs", data: Blob[]): void
+}>()
 const mainStore = useMainStore()
 
-const props = defineProps({
-  start: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-  recording: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-})
+const props = defineProps<Props>()
 
 const states = reactive({
   blobs: [],
@@ -192,7 +189,7 @@ const stopRecording = async (): Promise<void> => {
     window.screenStream.getVideoTracks().forEach((s) => s.stop())
     states.rec?.stop()
     console.log(states.blobs)
-    emit("downloadlink", states.blobs)
+    emit("screenBlobs", states.blobs)
 
     await window.audioCtx.close()
   } catch (error) {
