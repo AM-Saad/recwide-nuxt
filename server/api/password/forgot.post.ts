@@ -27,6 +27,13 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    if (!user.email_verified) {
+      setResponseStatus(event, 400)
+      return {
+        message: `This email is not verified. Please verify your email first by clicking <a class="font-bold" href="/auth/verifyAccount?email=${email}">here</a>`,
+      }
+    }
+
     const newVerificationCode = await verificationCode()
     await sendEmail(email, newVerificationCode)
 
