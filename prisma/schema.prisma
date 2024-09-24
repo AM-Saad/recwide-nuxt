@@ -80,6 +80,12 @@ model users {
   email           String  @unique
   name            String
   passkey_user_id String?  @db.ObjectId
-  password        String
+  password        String?
   projects        String[] @db.ObjectId
+  auth_provider  String? @default("credentials")
+  account_verified        Boolean @default(false)
+  email_verified         Boolean @default(false)
+  register_verification    String?
+   password_verification String?
+   
 }

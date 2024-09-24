@@ -332,13 +332,13 @@
 import {
   cleanupOutdatedCaches,
   createHandlerBoundToURL,
-  precacheAndRoute
-} from 'workbox-precaching'
-import { clientsClaim } from 'workbox-core'
-import { NavigationRoute, registerRoute } from 'workbox-routing'
-import { CacheFirst } from 'workbox-strategies'
-import { ExpirationPlugin } from 'workbox-expiration'
-import { calculate_chunk_size } from '../../utils'
+  precacheAndRoute,
+} from "workbox-precaching"
+import { clientsClaim } from "workbox-core"
+import { NavigationRoute, registerRoute } from "workbox-routing"
+import { CacheFirst } from "workbox-strategies"
+import { ExpirationPlugin } from "workbox-expiration"
+import { calculate_chunk_size } from "../../utils"
 declare let self: ServiceWorkerGlobalScope
 
 // self.__WB_MANIFEST is default injection point
@@ -348,51 +348,51 @@ precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
 
 let allowlist: undefined | RegExp[]
-if (import.meta.env.DEV) allowlist = [/^\/$/]
+allowlist = [/^\/$/]
 
 // Inside your custom service worker file (e.g., sw.js)
-self.addEventListener('push', async (event: PushEvent) => {
-  console.log('Push event received')
+self.addEventListener("push", async (event: PushEvent) => {
+  console.log("Push event received")
   const data: any = await event.data?.json()
   self.registration.showNotification(data?.title, {
     body: data?.message,
-    icon: 'https://github.com/user-attachments/assets/b290c081-ca6d-47a8-a387-73fb34f0a526',
+    icon: "https://github.com/user-attachments/assets/b290c081-ca6d-47a8-a387-73fb34f0a526",
     silent: false,
-    requireInteraction: true
+    requireInteraction: true,
   })
 })
 
 // to allow work offline
 registerRoute(
-  new NavigationRoute(createHandlerBoundToURL('/'), {
+  new NavigationRoute(createHandlerBoundToURL("/"), {
     allowlist,
-    denylist: [/^\/api/]
-  })
+    denylist: [/^\/api/],
+  }),
 )
 
-self.addEventListener('periodicsync', (event: any) => {
-  console.log('Something happening in periodicsync')
-  if (event.tag === 'content-sync') {
+self.addEventListener("periodicsync", (event: any) => {
+  console.log("Something happening in periodicsync")
+  if (event.tag === "content-sync") {
     event.waitUntil(syncContent())
   }
 })
 
 async function syncContent() {
   // Your logic to update or fetch content in the background
-  console.log('Syncing content...')
+  console.log("Syncing content...")
   // Implement your content sync logic here
 }
 
-self.addEventListener('sync', (event: any) => {
-  console.log('Something happening in sync')
-  if (event.tag === 'myFirstSync') {
+self.addEventListener("sync", (event: any) => {
+  console.log("Something happening in sync")
+  if (event.tag === "myFirstSync") {
     event.waitUntil(doSomeBackgroundSync())
   }
 })
 
 async function doSomeBackgroundSync() {
   // Your background sync logic here, e.g., sending messages or syncing data
-  console.log('Doing some background sync...')
+  console.log("Doing some background sync...")
   // Implement your sync logic here
 }
 
@@ -402,31 +402,31 @@ registerRoute(
     return new RegExp(/\.(?:png|gif|jpg|jpeg|webp|svg|ico)$/).test(request.url)
   },
   new CacheFirst({
-    cacheName: 'images',
+    cacheName: "images",
     plugins: [
       new ExpirationPlugin({
         maxEntries: 14, // Max number of images to cache
-        maxAgeSeconds: 7 * 24 * 60 * 60 // 7 Days
-      })
-    ]
-  })
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+      }),
+    ],
+  }),
 )
 
 let db: IDBDatabase
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
-    const request: IDBOpenDBRequest = indexedDB.open('recwide_db', 1)
+    const request: IDBOpenDBRequest = indexedDB.open("recwide_db", 1)
 
     request.onupgradeneeded = function (event: IDBVersionChangeEvent) {
       if (!event.target) return
       const target = event.target as IDBOpenDBRequest
       db = target.result
-      const objectStore = db.createObjectStore('projects', {
-        keyPath: 'name',
-        autoIncrement: true
+      const objectStore = db.createObjectStore("projects", {
+        keyPath: "name",
+        autoIncrement: true,
       })
-      objectStore.createIndex('name', 'name', { unique: false })
+      objectStore.createIndex("name", "name", { unique: false })
     }
 
     request.onsuccess = function (event: Event) {
@@ -437,14 +437,14 @@ function openDatabase() {
 
     request.onerror = function (event: Event) {
       const target = event.target
-      reject('Database error: ' + target.errorCode)
+      reject("Database error: " + target.errorCode)
     }
   })
 }
 
 openDatabase()
   .then((db) => {
-    console.assert('Database opened successfully')
+    console.assert("Database opened successfully")
   })
   .catch((error) => {
     console.error(error)
@@ -460,22 +460,22 @@ async function uploadChunk(data: {
   const { chunk, index, totalChunks, fileIdentifier, uploadUrl } = data
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 20000) // Set timeout to 20 seconds
-  console.info('Upload chunk index ', index)
+  console.info("Upload chunk index ", index)
 
   const formData = new FormData()
-  formData.append('file', chunk)
-  formData.append('index', index)
-  formData.append('totalChunks', totalChunks)
-  formData.append('identifier', fileIdentifier)
+  formData.append("file", chunk)
+  formData.append("index", index)
+  formData.append("totalChunks", totalChunks)
+  formData.append("identifier", fileIdentifier)
 
   try {
     const response = await fetch(uploadUrl, {
-      method: 'POST',
+      method: "POST",
       body: formData,
-      signal: controller.signal
+      signal: controller.signal,
     })
     clearTimeout(timeoutId) // Clear the timeout if the request completes in time
-    if (!response.ok) throw new Error('Upload failed')
+    if (!response.ok) throw new Error("Upload failed")
     // Optionally parse and return response data here
   } catch (error) {
     clearTimeout(timeoutId) // Ensure to clear the timeout if an error occurs
@@ -485,10 +485,10 @@ async function uploadChunk(data: {
 
 async function uploadFile(file: any, uploadUrl: any, retryDelays: any) {
   const chunkSize = calculate_chunk_size(file.size)
-  console.info('Chunk size', chunkSize)
+  console.info("Chunk size", chunkSize)
 
   const totalChunks = Math.ceil(file.size / chunkSize)
-  console.info('Total chunks', totalChunks)
+  console.info("Total chunks", totalChunks)
 
   const fileIdentifier = `${file.name}-${Date.now()}` // Example unique identifier
 
@@ -506,15 +506,15 @@ async function uploadFile(file: any, uploadUrl: any, retryDelays: any) {
               index,
               totalChunks,
               fileIdentifier,
-              uploadUrl
+              uploadUrl,
             }
             await uploadChunk(data)
 
             const clients = await self.clients.matchAll()
             clients.forEach((client) => {
               client.postMessage({
-                type: 'progress',
-                data: { identifier: fileIdentifier, index, totalChunks }
+                type: "progress",
+                data: { identifier: fileIdentifier, index, totalChunks },
               })
             })
             break // Success, exit retry loop
@@ -522,7 +522,7 @@ async function uploadFile(file: any, uploadUrl: any, retryDelays: any) {
             if (attempt < retryDelays.length - 1) {
               // If not the last attempt, wait for the retry delay before retrying
               await new Promise((resolve) =>
-                setTimeout(resolve, retryDelays[attempt])
+                setTimeout(resolve, retryDelays[attempt]),
               )
             } else {
               // Last attempt, throw error without waiting
@@ -530,34 +530,34 @@ async function uploadFile(file: any, uploadUrl: any, retryDelays: any) {
             }
           }
         }
-      })()
+      })(),
     )
   }
 
   try {
     const res = await Promise.all(uploadPromises)
-    console.log('Upload complete', file.name, res)
+    console.log("Upload complete", file.name, res)
     self.clients.matchAll().then((clients) => {
       clients.forEach((client) => {
         client.postMessage({
-          type: 'fileComplete',
+          type: "fileComplete",
           data: {
             identifier: fileIdentifier,
-            message: `${file.name} upload complete`
-          }
+            message: `${file.name} upload complete`,
+          },
         })
       })
     })
   } catch (error) {
-    console.error('Failed to upload', file.name, error)
+    console.error("Failed to upload", file.name, error)
     self.clients.matchAll().then((clients) => {
       clients.forEach((client) => {
         client.postMessage({
-          type: 'error',
+          type: "error",
           data: {
             message: `Failed to upload ${file.name}`,
-            identifier: fileIdentifier
-          }
+            identifier: fileIdentifier,
+          },
         })
       })
     })
@@ -567,7 +567,7 @@ async function uploadFile(file: any, uploadUrl: any, retryDelays: any) {
 async function handleConcurrentUploads(
   name: string,
   files: File[],
-  uploadUrl: string
+  uploadUrl: string,
 ) {
   const retryDelays = [5000, 10000, 15000] // Milliseconds to wait before retries
   const maxConcurrentUploads = 4 // Adjust based on your server capacity
@@ -595,64 +595,64 @@ async function handleConcurrentUploads(
   self.clients.matchAll().then((clients) => {
     clients.forEach((client) => {
       client.postMessage({
-        type: 'allComplete',
-        data: { message: 'All uploads complete.' }
+        type: "allComplete",
+        data: { message: "All uploads complete." },
       })
     })
   })
 }
 
-self.addEventListener('message', async (e: any) => {
+self.addEventListener("message", async (e: any) => {
   const { type, files, uploadUrl, name } = e.data
-  console.log('Message received', 'type: ', type, 'data', files)
-  if (type == 'uploadFiles') {
+  console.log("Message received", "type: ", type, "data", files)
+  if (type == "uploadFiles") {
     // Notify the originating client about the upload start (if needed)
     if (e.source.id) {
       const client = await self.clients.get(e.source.id)
       if (!client) {
-        console.error('Client not found')
+        console.error("Client not found")
         return
       }
       client.postMessage({
-        type: 'uploadStart',
-        data: { message: 'Upload has started.' }
+        type: "uploadStart",
+        data: { message: "Upload has started." },
       })
     }
-    handleDatabaseOperation({ action: 'add', payload: { name, files } })
+    handleDatabaseOperation({ action: "add", payload: { name, files } })
 
     await handleConcurrentUploads(name, files, uploadUrl)
   }
 })
 function handleDatabaseOperation(data: { action: string; payload: any }) {
   // Start a new transaction
-  const transaction = db.transaction(['projects'], 'readwrite')
+  const transaction = db.transaction(["projects"], "readwrite")
   console.info(`Transaction Started With Action = ${data.action}`)
 
   // Get the object store
-  const objectStore = transaction.objectStore('projects')
+  const objectStore = transaction.objectStore("projects")
   console.info(`Object Store = ${objectStore.name}`)
 
   // Perform the desired operation (add, get, update, delete)
   let request
 
-  if (data.action === 'add') {
-    console.log('Data to be added: ', data.payload)
+  if (data.action === "add") {
+    console.log("Data to be added: ", data.payload)
     // Ensure payload contains the `name` property for the in-line key
     request = objectStore.add(data.payload)
-  } else if (data.action === 'get') {
+  } else if (data.action === "get") {
     request = objectStore.get(data.payload.id)
-  } else if (data.action === 'update') {
+  } else if (data.action === "update") {
     request = objectStore.put(data.payload)
-  } else if (data.action === 'delete') {
+  } else if (data.action === "delete") {
     request = objectStore.delete(data.payload.id)
   }
 
   request!.onsuccess = function (event) {
-    console.log('Transaction Operation successful', event.target?.result)
+    console.log("Transaction Operation successful", event.target?.result)
   }
 
   request!.onerror = function (event) {
-    console.error('Transaction Operation error: ', event.target?.errorCode)
+    console.error("Transaction Operation error: ", event.target?.errorCode)
   }
 }
 

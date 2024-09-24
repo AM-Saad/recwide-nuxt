@@ -15,7 +15,7 @@
   "workbench.tips.enabled": true,
   "editor.colorDecorators": false,
   "git.decorations.enabled": false,
-  "workbench.startupEditor": "welcomePage",
+  "workbench.startupEditor": "none",
   "editor.lightbulb.enabled": "onCode",
   "search.useIgnoreFiles": false,
   "search.exclude": {
@@ -40,17 +40,13 @@
   "emmet.includeLanguages": {
     "blade": "html",
     "react": "html",
-    "javascript": "html"
+    "javascript": "html",
+    "vue": "vue"
   },
   "files.associations": {
     ".php_cs": "php",
     ".php_cs.dist": "php"
   },
-
-  /**
-   * PHP
-   **/
-  "php.suggest.basic": false,
 
   /**
    * Prettier
@@ -68,7 +64,7 @@
     "editor.formatOnSave": true
   },
   "[vue]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
   "[javascriptreact]": {
@@ -79,7 +75,6 @@
   "prettier.useEditorConfig": false,
   "explorer.sortOrder": "default",
   "prettier.tabWidth": 5,
-  "vetur.format.options.tabSize": 4,
 
   "files.autoSave": "off",
   "[css]": {
@@ -100,10 +95,5 @@
   },
   "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
   "diffEditor.wordWrap": "on",
-  "notebook.output.wordWrap": true,
-
-  "tailwindCSS.includeLanguages": {
-    "plaintext": "html"
-  },
-  "tailwindCSS.experimental.configFile": null
+  "notebook.output.wordWrap": true
 }

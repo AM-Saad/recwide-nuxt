@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useMainStore } from "~/store"
-
-const emit = defineEmits(["switch"])
+import { SCENE, AUDIO } from "~/utils"
+const emit = defineEmits<{
+  (event: "switch", component: STEPS, message?: string): void
+}>()
 
 const store = useMainStore()
 const recording = ref(false)
@@ -15,20 +17,22 @@ onMounted(() => {
   displayGuide()
 
   try {
-    window.boradcast.getTracks().forEach((track) => track.stop())
+    if (window.broadcast !== undefined)
+      window.broadcast.getTracks().forEach((track) => track.stop())
   } catch (error) {
     console.error("Error stopping broadcast tracks", error)
     return
   }
 
-  window.onbeforeunload = ():string => "Are you sure you want to close the window?"
+  window.onbeforeunload = (): string =>
+    "Are you sure you want to close the window?"
 })
 
 onUnmounted(() => {
   window.onbeforeunload = null
 })
 
-function displayGuide():void {
+function displayGuide(): void {
   const audio = store.audioSettings
   const guideDismissed =
     localStorage.getItem("guideDismissed") === "true" ? false : true
@@ -42,43 +46,43 @@ function displayGuide():void {
   }
 }
 
-function closeGuide():void {
+function closeGuide(): void {
   showGuide.value = false
   readyToStart.value = true
 }
 
-function canceled(msg: string):void {
+function canceled(msg: string): void {
   store.setCamReady(false)
   store.setScreenReady(false)
   checkIfReadyToRecord()
-  emit("switch", "options", msg)
+  emit("switch", STEPS.AUDIO, msg)
 }
 
-function screenReady():void {
+function screenReady(): void {
   store.setScreenReady(true)
   checkIfReadyToRecord()
 }
 
-function camReady():void {
+function camReady(): void {
   store.setCamReady(true)
   checkIfReadyToRecord()
 }
 
-function stopRecording():void {
+function stopRecording(): void {
   recording.value = false
   checkIfRecordingIsFinished()
 }
 
-function forceStopCam():void {
+function forceStopCam(): void {
   stopCam.value = true
 }
 
-function accessDenied():void {
+function accessDenied(): void {
   accessGranted.value = false
   store.setCamError(true)
 }
 
-function checkIfReadyToRecord():void {
+function checkIfReadyToRecord(): void {
   switch (store.mode) {
     case SCENE.SCREEN_ONLY:
       if (store.screenIsReady) {
@@ -98,7 +102,7 @@ function checkIfReadyToRecord():void {
   }
 }
 
-function checkIfRecordingIsFinished():void {
+function checkIfRecordingIsFinished(): void {
   switch (store.mode) {
     case SCENE.SCREEN_ONLY:
       if (store.blobs.length > 0) {
@@ -118,7 +122,8 @@ function checkIfRecordingIsFinished():void {
   }
 }
 
-function pushCamFile(val: unknown):void {
+function pushCamFile(val: BlobPart[]): void {
+  console.log(val)
   const exist = store.blobs.find((b) => b.name === "camRecording")
   if (!exist) {
     store.newBlob({ chunks: val, name: "camRecording" })
@@ -126,7 +131,7 @@ function pushCamFile(val: unknown):void {
   }
 }
 
-function pushScreenFile(val: unknown):void {
+function pushScreenFile(val: BlobPart[]): void {
   const exist = store.blobs.find((b) => b.name === "screenRecording")
   if (!exist) {
     store.newBlob({ chunks: val, name: "screenRecording" })
@@ -141,19 +146,19 @@ watch(recording, (newVal) => {
 
 <template>
   <div class="containers">
-    <ModalsGuide
+    <modals-guide-dialog
       v-if="showGuide"
-      :show="showGuide" @gotit="closeGuide" />
+      :show="showGuide"
+      @gotit="closeGuide"
+    />
 
     <recording-screen-recording
       v-if="store.mode != SCENE.WEBCAM_ONLY && readyToStart"
       :recording="recording"
       :start="start"
-      :finished="store.finished"
-      :resolution="store.currentResolution"
       @ready="screenReady"
       @canceled="canceled"
-      @downloadlink="pushScreenFile"
+      @screen-blobs="pushScreenFile"
       @force-stop-cam="forceStopCam"
     />
 
@@ -165,8 +170,8 @@ watch(recording, (newVal) => {
       :stop-cam="stopCam"
       @canceled="canceled"
       @ready="camReady"
-      @downloadlink="pushCamFile"
-      @accessdenied="accessDenied"
+      @cam-blobs="pushCamFile"
+      @access-denied="accessDenied"
     />
   </div>
 

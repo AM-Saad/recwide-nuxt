@@ -1,32 +1,25 @@
-<script setup>
-  // const props = defineProps({
-  //   show: Boolean
-  // })
-  const emit = defineEmits('close')
+<script setup lang="ts">
+defineProps<{ show: boolean }>()
+const emit = defineEmits<{
+  (event: "close"): void
+}>()
 
-  onMounted(() => {
-    // close on escape key
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        emit('close')
-      }
-    })
+onMounted(() => {
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") emit("close")
   })
+})
 
-  onUnmounted(() => {
-    window.removeEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        emit('close')
-      }
-    })
+onUnmounted(() => {
+  window.removeEventListener("keydown", (e) => {
+    if (e.key === "Escape") emit("close")
   })
+})
 </script>
 
 <template>
   <Transition name="modal">
-    <div
-v-if="show"
-class="modal-mask">
+    <div v-if="show" class="modal-mask">
       <div
         class="inner glass-bg absolute left-[50%] top-[50%] w-96 -translate-x-1/2 -translate-y-1/2 transform rounded-md bg-white p-3 shadow-lg"
       >
@@ -55,31 +48,31 @@ class="modal-mask">
 </template>
 
 <style>
-  .modal-mask {
-    position: fixed;
-    z-index: 9999;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    transition: opacity 0.3s ease;
-  }
+.modal-mask {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  transition: opacity 0.3s ease;
+}
 
-  .modal-header h3 {
-    margin-top: 0;
-  }
+.modal-header h3 {
+  margin-top: 0;
+}
 
-  .modal-body {
-    margin: 20px 0;
-  }
+.modal-body {
+  margin: 20px 0;
+}
 
-  .modal-default-button {
-    float: right;
-  }
+.modal-default-button {
+  float: right;
+}
 
-  /*
+/*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
  * by Vue.js.
@@ -88,23 +81,23 @@ class="modal-mask">
  * these styles.
  */
 
-  .modal-enter-from {
-    opacity: 0;
-  }
+.modal-enter-from {
+  opacity: 0;
+}
 
-  .modal-leave-to {
-    opacity: 0;
-  }
+.modal-leave-to {
+  opacity: 0;
+}
 
-  .modal-enter-from .modal-container,
-  .modal-leave-to .modal-container {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-  }
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
 
-  @media (prefers-color-scheme: dark) {
-    .modal-container {
-      @apply bg-zinc-800;
-    }
+@media (prefers-color-scheme: dark) {
+  .modal-container {
+    @apply bg-zinc-800;
   }
+}
 </style>

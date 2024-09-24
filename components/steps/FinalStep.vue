@@ -2,7 +2,8 @@
 import SaveProject from "./SaveProject.vue"
 import { useMainStore } from "~/store"
 
-const emit = defineEmits(["re-record"])
+const emit = defineEmits<{ (event: "re-record", component: STEPS): void }>()
+
 const { status } = useAuth()
 const store = useMainStore()
 const blobs = computed(() => store.blobs)
@@ -16,16 +17,16 @@ const videotype = ref("mp4")
 
 onMounted(() => createRenderUrl())
 
-function reRecord() : void {
+function reRecord(): void {
   if (confirm("Your records will be lost, are you sure you want to leave?")) {
     converted.value = false
     allVideos.value = []
     videotype.value = "mp4"
-    emit("re-record")
+    emit("re-record", STEPS.SCENE)
   }
 }
 
-function download():void {
+function download(): void {
   const temporaryDownloadLink = document.createElement("a")
   temporaryDownloadLink.style.display = "none"
   document.body.appendChild(temporaryDownloadLink)
@@ -40,7 +41,7 @@ function download():void {
   document.body.removeChild(temporaryDownloadLink)
 }
 
-function createRenderUrl():void {
+function createRenderUrl(): void {
   for (let n = 0; n < blobs.value.length; n++) {
     const obj = blobs.value[n] as { name: string; chunks: BlobPart[] }
     const blob = new Blob(obj.chunks, { type: `video/${videotype.value}` })
@@ -64,7 +65,7 @@ function createRenderUrl():void {
         class="goBack relative flex transform items-center justify-center transition-all duration-300 group-hover:-translate-x-2"
         @click="reRecord()"
       >
-        <IconsArrowback />
+        <icons-arrow-back />
         <span class="text-xs">Re-Record</span>
       </button>
     </div>

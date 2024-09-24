@@ -30,7 +30,7 @@ export const useMainStore = defineStore("mainStore", {
     url: "http://localhost:8000",
     msg: null,
     networkconnections: true,
-    mode: SCENE.SCREEN_AND_WEBCAM,
+    mode: SCENE.SCREEN_ONLY,
     audioSettings: AUDIO.MIC_AND_SYSTEM,
     camGranted: false,
     micGranted: false,
@@ -76,7 +76,7 @@ export const useMainStore = defineStore("mainStore", {
       this.audioSettings = mode
     },
 
-    newBlob(blob: unknown): void {
+    newBlob(blob: Blob): void {
       this.blobs.push(blob)
     },
 
@@ -104,13 +104,13 @@ export const useMainStore = defineStore("mainStore", {
       this.micGranted = val
     },
 
-    reRecord(): void {
+    reset(): void {
       this.camerror = false
       this.finished = false
       this.camIsReady = false
       this.screenIsReady = false
       this.blobs = []
-      this.mode = SCENE.SCREEN_AND_WEBCAM
+      this.mode = SCENE.SCREEN_ONLY
       this.audioSettings = AUDIO.MIC_AND_SYSTEM
       this.currentResolution = 1080
     },

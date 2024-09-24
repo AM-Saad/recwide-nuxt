@@ -11,8 +11,10 @@ export default defineEventHandler(async (event) => {
   const { email } = await readBody(event)
   const session = event.context.session
   if (!email) {
-    event.res.statusCode = 400
-    return "email is required"
+    return {
+      status: 400,
+      body: "Email is required",
+    }
   }
 
   const user = await prisma.users.findUnique({
@@ -20,8 +22,10 @@ export default defineEventHandler(async (event) => {
   })
 
   if (!user) {
-    event.res.statusCode = 404
-    return "User not found"
+    return {
+      status: 404,
+      body: "User not found",
+    }
   }
 
   const userPasskeys = await prisma.publickeycreds.findMany({

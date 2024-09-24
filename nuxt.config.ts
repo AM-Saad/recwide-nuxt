@@ -13,15 +13,60 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@sidebase/nuxt-session",
   ],
+
   future: {
     typescriptBundlerResolution: true,
   },
+  hooks: {
+    ready: async () => {
+      // Validate public environment variable
+      if (!process.env.SERVER_URL) {
+        throw new Error("Missing required environment variable: SERVER_URL")
+      }
+      if (!process.env.VAPID_PUBLIC_KEY) {
+        throw new Error(
+          "Missing required environment variable: VAPID_PUBLIC_KEY",
+        )
+      }
+      if (!process.env.VAPID_PRIVATE_KEY) {
+        throw new Error(
+          "Missing required environment variable: VAPID_PRIVATE_KEY",
+        )
+      }
+      if (!process.env.AUTH_SECRET) {
+        throw new Error("Missing required environment variable: AUTH_SECRET")
+      }
+      if (!process.env.GOOGLE_CLIENT_ID) {
+        throw new Error(
+          "Missing required environment variable: GOOGLE_CLIENT_ID",
+        )
+      }
+      if (!process.env.GOOGLE_CLIENT_SECRET) {
+        throw new Error(
+          "Missing required environment variable: GOOGLE_CLIENT_SECRET",
+        )
+      }
 
-  //   experimental: {
-  //     payloadExtraction: true,
-  //     watcher: "chokidar",
-  //   },
+      // Log success if validation passes
+      console.log("Environment variables validated successfully.")
+    },
+  },
 
+  experimental: {
+    compileTemplate: true,
+    templateUtils: true,
+    relativeWatchPaths: true,
+    defaults: {
+      useAsyncData: {
+        deep: true,
+      },
+    },
+  },
+  unhead: {
+    renderSSRHeadOptions: {
+      omitLineBreaks: false,
+    },
+  },
   imports: {
     autoImport: true,
   },
@@ -31,11 +76,14 @@ export default defineNuxtConfig({
     buildDate: new Date().toISOString(),
   },
   auth: {
+    isEnabled: true,
+    originEnvKey: "AUTH_ORIGIN",
+    //  baseURL: process.env.AUTH_ORIGIN + "/api/auth",
     provider: {
       type: "authjs",
-      trustHost: false,
-      defaultProvider: "github",
-      addDefaultCallbackUrl: true,
+      trustHost: true,
+      // defaultProvider: "google",
+      // addDefaultCallbackUrl: true,
     },
     sessionRefresh: {
       enablePeriodically: false,
@@ -171,6 +219,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      AUTH_ORIGIN: process.env.AUTH_ORIGIN,
       SERVER_URL: process.env.SERVER_URL,
       VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
       VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,
@@ -178,7 +227,8 @@ export default defineNuxtConfig({
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     },
-    privte: {},
+    // Private config only available on the server
+    //   MY_SECRET_VAR: process.env.MY_SECRET_VAR || '',
   },
 
   compatibilityDate: "2024-08-03",

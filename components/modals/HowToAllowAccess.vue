@@ -1,32 +1,29 @@
-<script setup lang="ts" >
-
+<script setup lang="ts">
 const props = defineProps({
   show: {
-      type: Boolean,
-      default: false
+    type: Boolean,
+    default: false,
   },
   needGuide: {
-      type: String,
-      default: 'Microphone'
-  }
+    type: String,
+    default: "Microphone",
+  },
 })
 
 const show = ref(props.show)
 
-const emit = defineEmits(['close'])
+const emit = defineEmits<{
+  (event: "close"): void
+}>()
 
-
-const gotit = ():void => {
-  emit('close')
+const gotit = (): void => {
+  emit("close")
 }
-
 </script>
 
 <template>
   <Teleport to="body">
-    <UiDialogModal
-      :show="show"
-      @close="gotit">
+    <UiDialogModal :show="show" @close="gotit">
       <template #header>
         <div class="title text-xl font-bold">
           Get {{ needGuide }} Permission

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { useUserStore } from "@/modules/user/store/index.js"
-import type Project from "@/types/Project"
+import type { Project } from "~/types/Project"
 
 const route = useRoute()
 const { getToken, url } = useUserStore()
@@ -27,14 +26,13 @@ onMounted(async () => {
   const data = await res.json()
   project.value = data.project
 
-  project.value!.media.forEach((video) => {
-   
+  project.value!.media.forEach(() => {
     getThumbnails()
   })
   fetching.value = false
 })
 
-const getThumbnails =  ():void => {
+const getThumbnails = (): void => {
   // const { thumbnails } = useThumbnails(`${url}/videos/${project.slug}.mp4`)
   // const id = route.params.slug;
   // const token = getToken;
@@ -50,15 +48,14 @@ const getThumbnails =  ():void => {
   // });
 }
 
-const seeking = (e: Event):void => {
+const seeking = (e: Event): void => {
   console.log(e)
 }
 
-const seeked = (e: Event):void => {
+const seeked = (e: Event): void => {
   console.log(e)
 }
 </script>
-
 
 <template>
   <div>
@@ -75,10 +72,8 @@ const seeked = (e: Event):void => {
         </div>
 
         <div v-if="fetching">Loading...</div>
-        <div
-v-if="!fetching"
-class="grid grid-cols-4">
-          <div ></div>
+        <div v-if="!fetching" class="grid grid-cols-4">
+          <div></div>
           <div class="col-span-3">
             <div
               class="video-wrapper shadow rounded-lg overflow-hidden flex flex-col justify-between"
@@ -100,18 +95,16 @@ class="grid grid-cols-4">
                 id="split"
                 class="absolute h-full w-2 bg-gray-500 z-10 cursor-col-resize hover:bg-slate-400"
               ></span>
-
+              <!-- 
               <div class="flex">
-                <div
-v-for="i in thumbnails"
-:key="i.name" class="flex h-10">
+                <div v-for="i in thumbnails" :key="i.name" class="flex h-10">
                   <img
                     v-for="thumbnail in i.frames"
                     :key="thumbnail"
                     :src="url + '/thumbnails/' + i.name + '/' + thumbnail"
                   />
                 </div>
-              </div>
+              </div> -->
             </section>
           </div>
         </div>
