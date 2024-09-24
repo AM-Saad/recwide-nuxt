@@ -29,7 +29,11 @@ const loading = ref(false)
 
 const handleSubmit = async (): Promise<void> => {
   error.value = ""
-  if (!credentials.value.email || !credentials.value.password) {
+  if (
+    !credentials.value.name ||
+    !credentials.value.email ||
+    !credentials.value.password
+  ) {
     error.value = "Please add your information"
     return
   }
