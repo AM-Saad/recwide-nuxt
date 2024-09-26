@@ -151,6 +151,7 @@ const registerNotfification = async (): Promise<void> => {
         config.public.VAPID_PUBLIC_KEY,
       ),
     })
+    console.log("Subscription object", subscription)
 
     // Send the subscription object to the server
     await fetch("/api/subscribe", {
