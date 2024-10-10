@@ -194,6 +194,7 @@ const startUploading = (): void => {
       uploadUrl: `${config.public.SERVER_URL}/user/projects/upload/chunk`,
       name: state.name,
     })
+    console.log("Message sent to service worker")
   } else {
     console.error("Service Worker not ready")
     state.error = "Service Worker not ready"

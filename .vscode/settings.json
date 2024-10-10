@@ -95,5 +95,6 @@
   },
   "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
   "diffEditor.wordWrap": "on",
-  "notebook.output.wordWrap": true
+  "notebook.output.wordWrap": true,
+  "cSpell.words": ["Nuxt", "Recwide", "SENDGRID", "Vite"]
 }

@@ -23,22 +23,6 @@
       </router-link>
     </section>
 
-    <!-- You can use $pwa directly in templates! -->
-    <div
-      v-if="$pwa.needRefresh"
-      class="glass-bg fixed bottom-2 right-2 z-40 rounded-lg p-2 shadow-lg"
-    >
-      <span class="my-2 block text-sm dark:text-gray-100">
-        New content available, click on reload button to update.
-      </span>
-
-      <button
-        class="btn btn-small glass-bg"
-        @click="$pwa.updateServiceWorker()"
-      >
-        Reload
-      </button>
-    </div>
     <div class="wrapper">
       <section class="brands my-10 flex flex-wrap justify-between gap-3">
         <NuxtImg

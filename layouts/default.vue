@@ -35,6 +35,18 @@
     </nav>
 
     <div class="flex-1">
+      <div class="glass-bg z-40 rounded-lg p-2 shadow-lg">
+        <span class="my-2 block text-sm dark:text-gray-100">
+          New content available, click on reload button to update.
+        </span>
+
+        <button
+          class="btn btn-small glass-bg"
+          @click="$pwa.updateServiceWorker()"
+        >
+          Reload
+        </button>
+      </div>
       <slot></slot>
     </div>
 
@@ -78,7 +90,8 @@
 
 <script setup lang="ts">
 const { $pwa } = useNuxtApp()
-console.log("pwa", $pwa)
+console.log("pwa", Object.keys($pwa), Object.values($pwa))
+console.log("need refresh", $pwa.needRefresh)
 const { status } = useAuth()
 console.log("status", status)
 </script>

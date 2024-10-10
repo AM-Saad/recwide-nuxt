@@ -33,6 +33,11 @@ export default defineNuxtConfig({
           "Missing required environment variable: VAPID_PRIVATE_KEY",
         )
       }
+      if (!process.env.SENDGRID_API_KEY) {
+        throw new Error(
+          "Missing required environment variable: SENDGRID_API_KEY",
+        )
+      }
       if (!process.env.AUTH_SECRET) {
         throw new Error("Missing required environment variable: AUTH_SECRET")
       }
@@ -45,6 +50,9 @@ export default defineNuxtConfig({
         throw new Error(
           "Missing required environment variable: GOOGLE_CLIENT_SECRET",
         )
+      }
+      if (!process.env.DATABASE_URL) {
+        throw new Error("Missing required environment variable: DATABASE_URL")
       }
 
       // Log success if validation passes
@@ -119,7 +127,7 @@ export default defineNuxtConfig({
     manifest: {
       name: "Recwide",
       short_name: "Recwide",
-      theme_color: "#ffffff",
+      theme_color: "#f3f4f6",
       start_url: "/",
       display: "standalone",
       id: "/",
