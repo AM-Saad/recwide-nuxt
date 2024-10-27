@@ -1,7 +1,10 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 defineProps({
-  error: Object,
+  error: {
+    type: Object as PropType<Error>,
+    required: true,
+  },
 })
 
 function handleError(): void {

@@ -152,7 +152,7 @@ const startRecording = (): void => {
 
   try {
     window.screenStream
-      .getVideoTracks()[0]
+      ?.getVideoTracks()[0]
       .addEventListener("ended", () => emit("forceStopCam"))
 
     if (mainStore.audioSettings !== "No audio") {
@@ -185,13 +185,13 @@ const stopRecording = async (): Promise<void> => {
       s.getTracks().forEach((t) => t.stop()),
     )
     states.individualAudioStreams = []
-    window.screenStream.getTracks().forEach((s) => s.stop())
-    window.screenStream.getVideoTracks().forEach((s) => s.stop())
+    window.screenStream?.getTracks().forEach((s) => s.stop())
+    window.screenStream?.getVideoTracks().forEach((s) => s.stop())
     states.rec?.stop()
     console.log(states.blobs)
     emit("screenBlobs", states.blobs)
 
-    await window.audioCtx.close()
+    await window.audioCtx?.close()
   } catch (error) {
     console.log(error)
     return

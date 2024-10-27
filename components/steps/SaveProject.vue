@@ -5,7 +5,7 @@ import { useMainStore } from "~/store"
 const { status } = useAuth()
 
 // Define your component's emits
-const emit = defineEmits(["cancel", "register", "submitPorject"])
+const emit = defineEmits(["cancel", "register"])
 const config = useRuntimeConfig()
 const store = useMainStore()
 
@@ -33,7 +33,7 @@ interface SaveProjectData {
   currentPercent: number
   videosNames: string[]
   name: string
-  cancled: boolean
+  canceled: boolean
   error: string | null
 }
 
@@ -59,14 +59,14 @@ const state = reactive<SaveProjectData>({
   currentFileIndex: 0,
   currentPercent: 0,
   videosNames: [],
-  cancled: false,
+  canceled: false,
   name: "",
   error: null,
 })
 
 onMounted(() => {
   // Register for push notifications
-  registerNotfification()
+  registerNotification()
 
   if ("serviceWorker" in navigator) {
     // Ensure there's a service worker controlling the page
@@ -87,32 +87,31 @@ const listenToServiceWorker = (): void => {
 
 const handleSWMessage = (event: MessageEvent<WorkerMessage>): void => {
   const { type, data } = event.data as WorkerMessage
-  console.log(type, data)
   // Handle different types of messages: progress, error, completed
   switch (type) {
-    case "progress":
+    case SW_MESSAGE_TYPE.PROGRESS:
       // Update currentPercent in state based on the totalChunks and index
       state.currentPercent = Math.floor((data.index / data.totalChunks) * 100)
       state.totalMbDone = (data.index * 5) / 100
       break
-    case "fileComplete":
+    case SW_MESSAGE_TYPE.FILE_COMPLETE:
       // Handle upload completion
       console.log("fileComplete", data)
       state.currentFileIndex++
       state.currentPercent = 0
       state.videosNames.push(data.identifier)
       break
-    case "error":
+    case SW_MESSAGE_TYPE.ERROR:
       // Handle an upload error
       state.uploadError = true
       state.error = data.message
       break
 
-    case "allComplete":
+    case SW_MESSAGE_TYPE.ALL_FILES_COMPLETE:
       state.uploaded = true
       state.uploading = false
       state.currentPercent = 0.9999
-      submitPorject()
+      submitProject()
       break
   }
 }
@@ -136,7 +135,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray
 }
 
-const registerNotfification = async (): Promise<void> => {
+const registerNotification = async (): Promise<void> => {
   try {
     const registration = await navigator.serviceWorker.ready
     const permission = await Notification.requestPermission()
@@ -153,7 +152,7 @@ const registerNotfification = async (): Promise<void> => {
     })
 
     // Send the subscription object to the server
-    await fetch("/api/subscribe", {
+    await fetch("/api/notifications/subscribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(subscription),
@@ -186,7 +185,10 @@ const startUploading = (): void => {
   })
 
   if (navigator.serviceWorker.controller) {
-    console.log("Sending message to service worker")
+    console.log(
+      "Sending message to service worker",
+      navigator.serviceWorker.controller,
+    )
     state.uploading = true
     navigator.serviceWorker.controller.postMessage({
       type: "uploadFiles",
@@ -204,10 +206,10 @@ const startUploading = (): void => {
 const cancel = (): void => {
   if (state.uploading || state.saving) return
   emit("cancel")
-  state.cancled = true
+  state.canceled = true
 }
 
-const submitPorject = async (): Promise<void> => {
+const submitProject = async (): Promise<void> => {
   state.saving = true
   const today = new Date()
   const date = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`

@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
 import { generateRegistrationOptions } from "@simplewebauthn/server" // Replace with your actual library
-import { getServerSession } from "#auth"
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {

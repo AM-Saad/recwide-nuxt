@@ -1,9 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { verifyAuthenticationResponse } from "@simplewebauthn/server" // Replace with your actual library
-import type {
-  AuthenticatorTransportFuture,
-  Base64URLString,
-} from "@simplewebauthn/types"
+import type { AuthenticatorTransportFuture } from "@simplewebauthn/types"
 
 const prisma = new PrismaClient()
 
@@ -11,6 +8,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const session = event.context.session
   const email = session?.email
+  const config = useRuntimeConfig()
 
   if (!email) {
     event.res.statusCode = 400
@@ -50,7 +48,7 @@ export default defineEventHandler(async (event) => {
     const verification = await verifyAuthenticationResponse({
       response: body,
       expectedChallenge: session?.challenge,
-      expectedOrigin: "http://localhost:3000", // Replace with your origin
+      expectedOrigin: config.public.APP_BASE_URL, // Replace with your origin
       expectedRPID: "localhost", // Replace with your domain
       authenticator: {
         ...credential,

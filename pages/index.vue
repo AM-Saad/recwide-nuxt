@@ -145,7 +145,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   title: "Recwide - Free Screen Recorder",
   description:
@@ -154,10 +154,29 @@ definePageMeta({
   auth: false,
 })
 // If you want to use it in setup, import from the nuxtApp.
-const { $pwa } = useNuxtApp()
+// const { $pwa } = useNuxtApp()
+
+async function registerPeriodicSync(): Promise<void> {
+  const registration = await navigator.serviceWorker.ready
+
+  if ("periodicSync" in registration) {
+    try {
+      await registration.periodicSync.register("contentSync", {
+        //   minInterval: 24 * 60 * 60 * 1000, // Sync every 24 hours
+        minInterval: 3,
+      })
+      console.log("Periodic sync registered for content updates.")
+    } catch (error) {
+      console.error("Periodic Sync registration failed:", error)
+    }
+  } else {
+    console.log("Periodic Sync is not supported.")
+  }
+}
 
 onMounted(() => {
-  if ($pwa.offlineReady) console.log("App is offline ready")
-  else console.log("App is not offline ready")
+  //   if ($pwa.offlineReady) console.log("App is offline ready")
+  //   else console.log("App is not offline ready")
+  registerPeriodicSync()
 })
 </script>

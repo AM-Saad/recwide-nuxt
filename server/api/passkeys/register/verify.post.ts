@@ -7,6 +7,8 @@ export default defineEventHandler(async (event) => {
   const email = session?.email
   const expectedChallenge = session?.challenge
   const response = await readBody(event)
+  const config = useRuntimeConfig()
+
   console.log("session", session)
   if (!email || !expectedChallenge) {
     return {
@@ -34,7 +36,7 @@ export default defineEventHandler(async (event) => {
     const { verified, registrationInfo } = await verifyRegistrationResponse({
       response,
       expectedChallenge,
-      expectedOrigin: "http://localhost:3000",
+      expectedOrigin: config.public.APP_BASE_URL,
       expectedRPID: "localhost",
       requireUserVerification: false,
     })

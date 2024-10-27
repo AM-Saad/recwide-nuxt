@@ -4,9 +4,6 @@
       {{ formattedCurrentTime }}
     </div>
     /
-    <!-- <div class="progress-bar-container">
-            <div :style="progressBarStyle" class="progress-bar"></div>
-        </div> -->
     <div class="total-duration">
       {{ formattedTotalDuration }}
     </div>
@@ -18,35 +15,34 @@ export default {
   props: {
     total: {
       type: Number,
-      required: true
+      required: true,
     },
     current: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   computed: {
-    formattedTotalDuration():string {
+    formattedTotalDuration(): string {
       return this.formatTime(this.total)
     },
-    formattedCurrentTime():string {
+    formattedCurrentTime(): string {
       return this.formatTime(this.current)
     },
-    progressBarStyle(): { width: string }
-     {
+    progressBarStyle(): { width: string } {
       const percentage = (this.current / this.total) * 100
       return {
-        width: `${percentage}%`
+        width: `${percentage}%`,
       }
-    }
+    },
   },
   methods: {
-    formatTime(timeInSeconds:number):string {
+    formatTime(timeInSeconds: number): string {
       const minutes = Math.floor(timeInSeconds / 60)
       const seconds = timeInSeconds % 60
-      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds.toFixed(0)}`
-    }
-  }
+      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds.toFixed(0)}`
+    },
+  },
 }
 </script>
 

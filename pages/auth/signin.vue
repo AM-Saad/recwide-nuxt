@@ -25,24 +25,65 @@ const handleSubmit = async (): Promise<void> => {
     return
   }
 
-  loading.value = true
-
-  try {
-    const result = await signIn("credentials", {
-      redirect: false,
+  if (!navigator.onLine) {
+    // Register a sync event
+    const registration = await navigator.serviceWorker.ready
+    await registration.sync.register("syncForm", {
       email: credentials.value.email,
       password: credentials.value.password,
     })
-    if (result && result.error) {
-      error.value = result.error
-      return
+
+    if ("indexedDB" in window) {
+      const db: IDBDatabase = await indexedDB.open("recwide_db", 1, {
+        upgrade(db) {
+          db.createObjectStore("forms")
+        },
+      })
+
+      db.onsuccess = function (event: Event): void {
+        const target = event.target as IDBOpenDBRequest
+
+        const tx = target.result.transaction("forms", "readwrite")
+        const store = tx.objectStore("forms")
+        store.put({
+          email: credentials.value.email,
+          password: credentials.value.password,
+        })
+
+        tx.oncomplete = function (): void {
+          console.log("Form data saved locally.")
+        }
+
+        tx.onerror = function (): void {
+          console.log("Form data not saved locally.")
+        }
+
+        console.log("Form data saved locally and sync event registered.")
+      }
+
+      console.log("Form data saved locally and sync event registered.")
     }
-    router.push("/")
-  } catch (err) {
-    const serverError = err as Error
-    error.value = serverError.message || "An error occurred"
-  } finally {
-    loading.value = false
+    console.log("Form data saved locally and sync event registered.")
+  } else {
+    loading.value = true
+
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: credentials.value.email,
+        password: credentials.value.password,
+      })
+      if (result && result.error) {
+        error.value = result.error
+        return
+      }
+      router.push("/")
+    } catch (err) {
+      const serverError = err as Error
+      error.value = serverError.message || "An error occurred"
+    } finally {
+      loading.value = false
+    }
   }
 }
 </script>

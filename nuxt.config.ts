@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from "node:process"
-const sw = process.env.SW === "true"
 
 export default defineNuxtConfig({
   modules: [
@@ -22,6 +21,15 @@ export default defineNuxtConfig({
       // Validate public environment variable
       if (!process.env.SERVER_URL) {
         throw new Error("Missing required environment variable: SERVER_URL")
+      }
+      if (!process.env.APP_BASE_URL) {
+        throw new Error("Missing required environment variable: APP_BASE_URL")
+      }
+      if (!process.env.APP_PORT) {
+        throw new Error("Missing required environment variable: APP_PORT")
+      }
+      if (!process.env.AUTH_ORIGIN) {
+        throw new Error("Missing required environment variable: AUTH_ORIGIN")
       }
       if (!process.env.VAPID_PUBLIC_KEY) {
         throw new Error(
@@ -53,6 +61,9 @@ export default defineNuxtConfig({
       }
       if (!process.env.DATABASE_URL) {
         throw new Error("Missing required environment variable: DATABASE_URL")
+      }
+      if (!process.env.SW) {
+        throw new Error("Missing required environment variable: SW")
       }
 
       // Log success if validation passes
@@ -104,7 +115,7 @@ export default defineNuxtConfig({
     logLevel: "info",
     server: {
       hmr: {
-        port: 3000, // Ensure this matches your local dev server
+        port: process.env.APP_PORT, // Ensure this matches your local dev server
       },
     },
     define: {
@@ -120,9 +131,9 @@ export default defineNuxtConfig({
   },
 
   pwa: {
-    strategies: sw ? "injectManifest" : "generateSW",
-    srcDir: sw ? "public/service-worker" : undefined,
-    filename: sw ? "index.ts" : undefined,
+    strategies: "injectManifest",
+    srcDir: "public/service-worker",
+    filename: "index.ts",
     registerType: "autoUpdate",
     manifest: {
       name: "Recwide",
@@ -228,6 +239,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       AUTH_ORIGIN: process.env.AUTH_ORIGIN,
+      APP_BASE_URL: process.env.APP_BASE_URL,
       SERVER_URL: process.env.SERVER_URL,
       VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
       VAPID_PRIVATE_KEY: process.env.VAPID_PRIVATE_KEY,

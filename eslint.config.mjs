@@ -1,11 +1,11 @@
 // @ts-check
 // eslint.config.mjs
 import withNuxt from "./.nuxt/eslint.config.mjs"
-// import globals from "globals"
+import globals from "globals"
 
 export default withNuxt([
-  //   { files: ["**/*.{js,mjs,cjs,ts,vue}"] },
-  //   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+  { files: ["**/*.{js,mjs,cjs,ts,vue}"] },
+  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
 
   {
     files: ["**/*.vue", "**/*.ts", "**/*.js"],

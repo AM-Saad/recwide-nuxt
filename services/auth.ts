@@ -30,17 +30,16 @@ export const AuthService: AuthService = {
     confirmPassword?: string
     provider: string
   }) => {
+    const server = useRuntimeConfig().public.SERVER_URL
+
     try {
-      const response = await fetch(
-        "http://localhost:3000" + RESOURCES.AUTH_REGISTER_USER,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(credentials),
+      const response = await fetch(server + RESOURCES.AUTH_REGISTER_USER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      )
+        body: JSON.stringify(credentials),
+      })
       const data = await response.json()
       console.log("register_user -> data", data)
       return data as Promise<MyExpectedResponseType>

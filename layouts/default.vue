@@ -35,18 +35,14 @@
     </nav>
 
     <div class="flex-1">
-      <div class="glass-bg z-40 rounded-lg p-2 shadow-lg">
-        <span class="my-2 block text-sm dark:text-gray-100">
-          New content available, click on reload button to update.
-        </span>
-
-        <button
-          class="btn btn-small glass-bg"
-          @click="$pwa.updateServiceWorker()"
-        >
-          Reload
-        </button>
-      </div>
+      <shared-in-app-notifications :show="showInAppNotification">
+        <template #header>
+          <h2 class="text-lg font-bold">Notification</h2>
+        </template>
+        <template #body>
+          <p class="text-sm">This is a notification</p>
+        </template>
+      </shared-in-app-notifications>
       <slot></slot>
     </div>
 
@@ -87,11 +83,49 @@
     </footer>
   </div>
 </template>
+<!-- eslint-disable no-console -->
 
 <script setup lang="ts">
+import { SW_MESSAGE_TYPE } from "~/utils/constants"
+
 const { $pwa } = useNuxtApp()
 console.log("pwa", Object.keys($pwa), Object.values($pwa))
 console.log("need refresh", $pwa.needRefresh)
 const { status } = useAuth()
-console.log("status", status)
+
+const showInAppNotification = ref(false)
+
+const listenToServiceWorker = (): void => {
+  navigator.serviceWorker.addEventListener("message", handleSWMessage)
+}
+
+const handleSWMessage = (event: MessageEvent<WorkerMessage>): void => {
+  const { type, data } = event.data as WorkerMessage
+  // Handle different types of messages: progress, error, completed
+  switch (type) {
+    case SW_MESSAGE_TYPE.SYNC_FORM:
+      // Handle upload completion
+      console.log("syncForm", data)
+      break
+    case SW_MESSAGE_TYPE.FORM_SYNCED:
+      // Handle upload completion
+      console.log("formSynced", data)
+      break
+    case SW_MESSAGE_TYPE.FORM_SYNC_ERROR:
+      // Handle upload completion
+      console.log("formSyncError", data)
+      break
+    default:
+      console.log("Unknown message type", type)
+      break
+  }
+}
+
+onMounted(() => {
+  listenToServiceWorker()
+
+  setTimeout(() => {
+    showInAppNotification.value = true
+  }, 2000)
+})
 </script>

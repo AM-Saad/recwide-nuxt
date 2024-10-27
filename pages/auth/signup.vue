@@ -71,7 +71,7 @@ const handleSubmit = async (): Promise<void> => {
 
 <template>
   <div
-    class="flex items-center justify-center flex-col w-full max-w-md mx-auto mt-6 sm:mt-20 bg-gray-50 dark:bg-transparent p-8 rounded-lg border"
+    class="flex items-center justify-center flex-col w-full max-w-md mx-auto mt-6 sm:mt-18 bg-gray-50 dark:bg-transparent p-8 rounded-lg border"
   >
     <form
       ref="signup"

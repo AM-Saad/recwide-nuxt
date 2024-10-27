@@ -6,17 +6,17 @@ import { AuthService } from "~/services/auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
 import { verificationCode } from "~/utils/verificationCode.server"
 const prisma = new PrismaClient()
+const config = useRuntimeConfig()
 
 export default NuxtAuthHandler({
-  secret: useRuntimeConfig().public.AUTH_SECRET,
+  secret: config.public.AUTH_SECRET,
   providers: [
     // @ts-expect-error Use .default here for it to work during SSR.
     GoogleProvider.default({
-      clientId: useRuntimeConfig().public.GOOGLE_CLIENT_ID,
-      clientSecret: useRuntimeConfig().public.GOOGLE_CLIENT_SECRET,
+      clientId: config.public.GOOGLE_CLIENT_ID,
+      clientSecret: config.public.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           access_type: "offline", // Needed to get `refresh_token`
@@ -139,13 +139,16 @@ export default NuxtAuthHandler({
       // console.log("linkAccount", message)
     },
     session: async (message): Promise<void> => {
-      // console.log("Event -> session", message)
+      console.log("Event -> session", message)
     },
-    //  error: async (): Promise<void> => {
-    //    // console.log("error", message)
-    //  },
+    error: async (): Promise<void> => {
+      // console.log("error", message)
+    },
   },
   callbacks: {
+    redirect(params) {
+      console.log("callbacks -> redirect -> params", params)
+    },
     //  async jwt({ token, user, account }) {
     //    console.log("callbacks -> jwt -> token", token)
     //    console.log("callbacks -> jwt -> user", user)
@@ -244,12 +247,13 @@ export default NuxtAuthHandler({
 
     async session({ session, token }) {
       // Token we injected into the JWT callback above.
+      console.log("callbacks -> session -> token", token)
       const { sessionToken } = token
       // console.log("callbacks -> session -> token", token)
       // console.log("callbacks -> session -> token", token)
       // console.log("session", { session, token, sessionToken })
       // Fetch data OR add previous data from the JWT callback.
-      const additionalUserData = await $fetch(`/api/session/${sessionToken}`)
+      // const additionalUserData = await $fetch(`/api/session/${sessionToken}`)
       // console.log("additionalUserData", additionalUserData)
       // Return the modified session
       // console.log("callbacks -> session -> session", session)

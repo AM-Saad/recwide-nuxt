@@ -18,13 +18,10 @@ export default defineEventHandler(async (event) => {
   const session = await getServerSession(event)
 
   if (!session) {
-    return {
-      status: 401,
-      body: {
-        message: "Unauthorized",
-        projects: [],
-      },
-    }
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    })
   }
 
   try {
@@ -35,11 +32,23 @@ export default defineEventHandler(async (event) => {
       url: `/videos/${i}`,
       extension: videotype,
     }))
-
     const slug = name
       .replace(/\s+/g, "-") // Replace spaces with hyphens
       .replace(/[^\w-]/g, "") // Remove non-alphanumeric, non-hyphen, and non-underscore characters
       .toLowerCase() // Convert to lowercase
+
+    const user = await prisma.users.findUnique({
+      where: {
+        email: session.user!.email!,
+      },
+    })
+    if (!user) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "User not found",
+      })
+    }
+
     await prisma.projects.create({
       data: {
         name: name,
@@ -48,11 +57,11 @@ export default defineEventHandler(async (event) => {
         audioSettings: audioSettings,
         media: projectvideos,
         date: date,
-        user: session.uid as string, // Type assertion to treat session.uid as a string
+        user: user.id,
       },
     })
 
-    const response = await $fetch(`/api/sendNotification`, {
+    await $fetch(`/api/notifications/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,11 +79,7 @@ export default defineEventHandler(async (event) => {
       },
     }
   } catch (error) {
-    return {
-      status: 500,
-      body: {
-        message: "Internal server error",
-      },
-    }
+    console.log(error)
+    throw new Error("Failed To Save!")
   }
 })

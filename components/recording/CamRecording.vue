@@ -53,6 +53,7 @@ const startCamBroadcast = async (): Promise<boolean> => {
 const startRecordingCam = (): void => {
   const options = { mimeType: "video/webm;codecs=h264" }
   try {
+    if (!window.camStream) return
     states.mediaCamRecorder = new MediaRecorder(window.camStream, options)
     window.mediaCamRecorder = states.mediaCamRecorder
   } catch (e) {
