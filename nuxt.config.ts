@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from "node:process"
-console.log("NODE_ENV", process.env.AUTH_ORIGIN)
 
 export default defineNuxtConfig({
   modules: [
