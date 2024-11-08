@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from "node:process"
+console.log("NODE_ENV", process.env.AUTH_ORIGIN)
 
 export default defineNuxtConfig({
   modules: [
@@ -98,7 +99,7 @@ export default defineNuxtConfig({
   auth: {
     isEnabled: true,
     originEnvKey: "AUTH_ORIGIN",
-    //  baseURL: process.env.AUTH_ORIGIN + "/api/auth",
+    baseURL: process.env.AUTH_ORIGIN + "/api/auth",
     provider: {
       type: "authjs",
       trustHost: true,

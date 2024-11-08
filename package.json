@@ -9,7 +9,7 @@
       "preview": "nuxt preview",
       "postinstall": "nuxt prepare",
       "typecheck": "nuxt typecheck",
-      "start": "NODE_ENV=production node .output/server/index.mjs",
+      "start": "nuxt start",
       "sitemap": "vue-cli-service sitemap",
       "db:sync": "prisma generate",
       "prepare": "husky install",
