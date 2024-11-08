@@ -18,55 +18,57 @@ export default defineNuxtConfig({
   hooks: {
     ready: async () => {
       // Validate public environment variable
-      if (!process.env.SERVER_URL) {
-        throw new Error("Missing required environment variable: SERVER_URL")
-      }
-      if (!process.env.APP_BASE_URL) {
-        throw new Error("Missing required environment variable: APP_BASE_URL")
-      }
-      if (!process.env.APP_PORT) {
-        throw new Error("Missing required environment variable: APP_PORT")
-      }
-      if (!process.env.AUTH_ORIGIN) {
-        throw new Error("Missing required environment variable: AUTH_ORIGIN")
-      }
-      if (!process.env.VAPID_PUBLIC_KEY) {
-        throw new Error(
-          "Missing required environment variable: VAPID_PUBLIC_KEY",
-        )
-      }
-      if (!process.env.VAPID_PRIVATE_KEY) {
-        throw new Error(
-          "Missing required environment variable: VAPID_PRIVATE_KEY",
-        )
-      }
-      if (!process.env.SENDGRID_API_KEY) {
-        throw new Error(
-          "Missing required environment variable: SENDGRID_API_KEY",
-        )
-      }
-      if (!process.env.AUTH_SECRET) {
-        throw new Error("Missing required environment variable: AUTH_SECRET")
-      }
-      if (!process.env.GOOGLE_CLIENT_ID) {
-        throw new Error(
-          "Missing required environment variable: GOOGLE_CLIENT_ID",
-        )
-      }
-      if (!process.env.GOOGLE_CLIENT_SECRET) {
-        throw new Error(
-          "Missing required environment variable: GOOGLE_CLIENT_SECRET",
-        )
-      }
-      if (!process.env.DATABASE_URL) {
-        throw new Error("Missing required environment variable: DATABASE_URL")
-      }
-      if (!process.env.SW) {
-        throw new Error("Missing required environment variable: SW")
-      }
+      if (process.env.NODE_ENV === "development") {
+        if (!process.env.SERVER_URL) {
+          throw new Error("Missing required environment variable: SERVER_URL")
+        }
+        if (!process.env.APP_BASE_URL) {
+          throw new Error("Missing required environment variable: APP_BASE_URL")
+        }
+        if (!process.env.APP_PORT) {
+          throw new Error("Missing required environment variable: APP_PORT")
+        }
+        if (!process.env.AUTH_ORIGIN) {
+          throw new Error("Missing required environment variable: AUTH_ORIGIN")
+        }
+        if (!process.env.VAPID_PUBLIC_KEY) {
+          throw new Error(
+            "Missing required environment variable: VAPID_PUBLIC_KEY",
+          )
+        }
+        if (!process.env.VAPID_PRIVATE_KEY) {
+          throw new Error(
+            "Missing required environment variable: VAPID_PRIVATE_KEY",
+          )
+        }
+        if (!process.env.SENDGRID_API_KEY) {
+          throw new Error(
+            "Missing required environment variable: SENDGRID_API_KEY",
+          )
+        }
+        if (!process.env.AUTH_SECRET) {
+          throw new Error("Missing required environment variable: AUTH_SECRET")
+        }
+        if (!process.env.GOOGLE_CLIENT_ID) {
+          throw new Error(
+            "Missing required environment variable: GOOGLE_CLIENT_ID",
+          )
+        }
+        if (!process.env.GOOGLE_CLIENT_SECRET) {
+          throw new Error(
+            "Missing required environment variable: GOOGLE_CLIENT_SECRET",
+          )
+        }
+        if (!process.env.DATABASE_URL) {
+          throw new Error("Missing required environment variable: DATABASE_URL")
+        }
+        if (!process.env.SW) {
+          throw new Error("Missing required environment variable: SW")
+        }
 
-      // Log success if validation passes
-      console.log("Environment variables validated successfully.")
+        // Log success if validation passes
+        console.log("Environment variables validated successfully.")
+      }
     },
   },
 
