@@ -22,7 +22,6 @@
           >Signup</router-link
         >
       </div>
-
       <div v-if="status === 'authenticated'" class="flex gap-5">
         <!-- <button
           class="btn btn-small animate-gradient"
@@ -35,14 +34,20 @@
     </nav>
 
     <div class="flex-1">
-      <shared-in-app-notifications :show="showInAppNotification">
+      <!-- <shared-in-app-notifications
+        :show="showInAppNotification"
+        @close="closeInAppNotification"
+      >
         <template #header>
           <h2 class="text-lg font-bold">Notification</h2>
         </template>
         <template #body>
           <p class="text-sm">This is a notification</p>
         </template>
-      </shared-in-app-notifications>
+      </shared-in-app-notifications> -->
+      <!-- <UNotifications /> -->
+      <UNotifications />
+
       <slot></slot>
     </div>
 
@@ -88,20 +93,14 @@
 <script setup lang="ts">
 import { SW_MESSAGE_TYPE } from "~/utils/constants"
 
-const { $pwa } = useNuxtApp()
-console.log("pwa", Object.keys($pwa), Object.values($pwa))
-console.log("need refresh", $pwa.needRefresh)
 const { status } = useAuth()
-
-const showInAppNotification = ref(false)
 
 const listenToServiceWorker = (): void => {
   navigator.serviceWorker.addEventListener("message", handleSWMessage)
 }
 
-const handleSWMessage = (event: MessageEvent<WorkerMessage>): void => {
-  const { type, data } = event.data as WorkerMessage
-  // Handle different types of messages: progress, error, completed
+const handleSWMessage = (event: MessageEvent<unknown>): void => {
+  const { type, data } = event.data as { type: SW_MESSAGE_TYPE; data: unknown }
   switch (type) {
     case SW_MESSAGE_TYPE.SYNC_FORM:
       // Handle upload completion
@@ -123,9 +122,5 @@ const handleSWMessage = (event: MessageEvent<WorkerMessage>): void => {
 
 onMounted(() => {
   listenToServiceWorker()
-
-  setTimeout(() => {
-    showInAppNotification.value = true
-  }, 2000)
 })
 </script>

@@ -18,7 +18,7 @@ onUnmounted(() => {
 <template>
   <Transition
     name="modal"
-    type="transition"
+    type="animation"
     :duration="{
       enter: 1700,
       leave: 1700,

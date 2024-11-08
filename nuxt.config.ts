@@ -4,15 +4,14 @@ import process from "node:process"
 export default defineNuxtConfig({
   modules: [
     "@sidebase/nuxt-auth",
-    "@nuxtjs/tailwindcss",
     "~/modules/user/module.ts",
     "@pinia/nuxt",
     "@vite-pwa/nuxt",
     "@nuxt/image",
     "@nuxt/eslint",
     "@sidebase/nuxt-session",
+    "@nuxt/ui",
   ],
-
   future: {
     typescriptBundlerResolution: true,
   },
@@ -115,7 +114,7 @@ export default defineNuxtConfig({
     logLevel: "info",
     server: {
       hmr: {
-        port: process.env.APP_PORT, // Ensure this matches your local dev server
+        port: process.env.APP_PORT!, // Ensure this matches your local dev server
       },
     },
     define: {
@@ -231,7 +230,6 @@ export default defineNuxtConfig({
 
   ssr: false,
   css: ["~/assets/css/main.css"],
-
   typescript: {
     shim: true,
   },

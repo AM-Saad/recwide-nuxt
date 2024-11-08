@@ -45,7 +45,8 @@
   },
   "files.associations": {
     ".php_cs": "php",
-    ".php_cs.dist": "php"
+    ".php_cs.dist": "php",
+    "*.css": "tailwindcss"
   },
 
   /**
@@ -96,5 +97,19 @@
   "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
   "diffEditor.wordWrap": "on",
   "notebook.output.wordWrap": true,
-  "cSpell.words": ["Abdelrahman", "Nuxt", "Recwide", "SENDGRID", "Vite"]
+  "cSpell.words": [
+    "Abdelrahman",
+    "Nuxt",
+    "nuxtjs",
+    "Recwide",
+    "SENDGRID",
+    "sidebase",
+    "tailwindcss",
+    "Vite"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    ["ui:\\s*{([^)]*)\\s*}", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["/\\*\\s?ui\\s?\\*/\\s*{([^;]*)}", ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"]
 }
