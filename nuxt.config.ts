@@ -15,6 +15,9 @@ export default defineNuxtConfig({
   future: {
     typescriptBundlerResolution: true,
   },
+  alias: {
+    string_decoder: "string_decoder/",
+  },
   hooks: {
     ready: async () => {
       // Validate public environment variable
@@ -237,6 +240,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    onBeforeBuild() {
+      console.log("AUTH_ORIGIN:", process.env.AUTH_ORIGIN)
+    },
     public: {
       AUTH_ORIGIN: process.env.AUTH_ORIGIN,
       APP_BASE_URL: process.env.APP_BASE_URL,
