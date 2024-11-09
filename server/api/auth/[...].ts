@@ -84,6 +84,7 @@ export default NuxtAuthHandler({
           throw new Error("Invalid password")
         }
         // If the password is valid, return the user object
+        console.log("authorize -> user", user)
         return user
       },
     }),
@@ -141,13 +142,11 @@ export default NuxtAuthHandler({
     session: async (message): Promise<void> => {
       console.log("Event -> session", message)
     },
-    error: async (): Promise<void> => {
-      // console.log("error", message)
-    },
   },
   callbacks: {
     redirect(params) {
       console.log("callbacks -> redirect -> params", params)
+      return "/"
     },
     //  async jwt({ token, user, account }) {
     //    console.log("callbacks -> jwt -> token", token)
@@ -217,7 +216,6 @@ export default NuxtAuthHandler({
       // Check if it's the first time logging in (account object exists only on first login)
       if (account) {
         if (account.provider === "google") {
-          //  console.log("callbacks -> jwt -> account", account)
           // Google OAuth login
           return {
             ...token,
@@ -232,7 +230,6 @@ export default NuxtAuthHandler({
 
       // If the user is logging in via credentials (user exists on first credentials login)
       if (user) {
-        //   console.log("callbacks -> jwt -> user", user)
         return {
           ...token,
           id: user.id,

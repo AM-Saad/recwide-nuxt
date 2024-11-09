@@ -69,16 +69,18 @@ const handleSubmit = async (): Promise<void> => {
 
     try {
       const result = await signIn("credentials", {
-        redirect: false,
+        redirect: true,
         email: credentials.value.email,
         password: credentials.value.password,
       })
+      console.log("User logged in successfully.", result)
       if (result && result.error) {
         error.value = result.error
         return
       }
       router.push("/")
     } catch (err) {
+      console.log("Error logging in.", err)
       const serverError = err as Error
       error.value = serverError.message || "An error occurred"
     } finally {
