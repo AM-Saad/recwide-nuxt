@@ -69,18 +69,18 @@ registerRoute(
 )
 
 // Caching API responses
-registerRoute(
-  ({ url }) => url.pathname.startsWith("/api"),
-  new CacheFirst({
-    cacheName: "api-cache",
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 50,
-        maxAgeSeconds: 60 * 60, // Cache for 1 hour
-      }),
-    ],
-  }),
-)
+// registerRoute(
+//   ({ url }) => url.pathname.startsWith("/api"),
+//   new CacheFirst({
+//     cacheName: "api-cache",
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxEntries: 50,
+//         maxAgeSeconds: 60 * 60, // Cache for 1 hour
+//       }),
+//     ],
+//   }),
+// )
 
 // Open Database
 function openDatabase() {

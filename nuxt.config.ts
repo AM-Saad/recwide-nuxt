@@ -12,12 +12,15 @@ export default defineNuxtConfig({
     "@sidebase/nuxt-session",
     "@nuxt/ui",
   ],
+
   future: {
     typescriptBundlerResolution: true,
   },
+
   alias: {
     string_decoder: "string_decoder/",
   },
+
   hooks: {
     ready: async () => {
       // Validate public environment variable
@@ -85,11 +88,13 @@ export default defineNuxtConfig({
       },
     },
   },
+
   unhead: {
     renderSSRHeadOptions: {
       omitLineBreaks: false,
     },
   },
+
   imports: {
     autoImport: true,
   },
@@ -98,6 +103,7 @@ export default defineNuxtConfig({
     // you don't need to include this: only for testing purposes
     buildDate: new Date().toISOString(),
   },
+
   auth: {
     isEnabled: true,
     originEnvKey: "AUTH_ORIGIN",
@@ -115,6 +121,7 @@ export default defineNuxtConfig({
     },
     globalAppMiddleware: true,
   },
+
   vite: {
     logLevel: "info",
     server: {
@@ -130,7 +137,7 @@ export default defineNuxtConfig({
       minify: "esbuild",
     },
     esbuild: {
-      drop: ["console", "debugger"],
+      // drop: ["console", "debugger"],
     },
   },
 
@@ -235,6 +242,7 @@ export default defineNuxtConfig({
 
   ssr: false,
   css: ["~/assets/css/main.css"],
+
   typescript: {
     shim: true,
   },
@@ -258,4 +266,8 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2024-08-03",
+
+  devtools: {
+    enabled: true,
+  },
 })

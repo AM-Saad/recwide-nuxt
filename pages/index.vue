@@ -178,5 +178,6 @@ onMounted(() => {
   //   if ($pwa.offlineReady) console.log("App is offline ready")
   //   else console.log("App is not offline ready")
   registerPeriodicSync()
+  console.log("Mounted")
 })
 </script>

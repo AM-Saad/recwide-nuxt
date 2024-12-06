@@ -110,7 +110,7 @@ a:not(.btn):focus-visible {
 }
 
 .input {
-  @apply my-2 w-full rounded border border-gray-200 bg-white p-2 text-xs focus:ring-2 ring-offset-0 ring-[#fe9548];
+  @apply w-full rounded-md p-1 border min-h-14 text-xs focus:ring-2 ring-offset-0 ring-[#fe9548] focus:border-transparent;
 }
 
 .hint {
@@ -131,18 +131,18 @@ a:not(.btn):focus-visible {
   }
 
   .btn {
-    color: #eee;
+    color: #c0bbbb;
   }
 
   h1,
   h2,
   h3,
   h5 {
-    color: #fff !important;
+    color: #eee !important;
   }
 
   p:not(.text-red-400, .text-orange-300) {
-    color: #ccc !important;
+      color: #c0bbbb;
   }
 
   .options-select {

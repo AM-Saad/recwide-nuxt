@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
       return {
         status: 400,
         body: {
-          message: "Credentials are invalid.",
+          message: "Credentials are invalid!. Please try again.",
         },
       }
     }

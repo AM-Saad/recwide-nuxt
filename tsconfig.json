@@ -1,5 +1,13 @@
 {
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "types": ["@nuxt/types", "@nuxt/schema", "@types/node"],
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    }
+  }
 
   //  "compilerOptions": {
   //     "strict": true,

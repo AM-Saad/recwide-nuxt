@@ -5,94 +5,25 @@ definePageMeta({
 })
 
 const { signIn, getProviders } = useAuth()
-const router = useRouter()
+const { handleSubmit, credentials, error, loading } = useLogin()
+
 const providers = await getProviders()
-const loading = ref(false)
-const error = ref("")
 const mappedProviders = Object.values(providers).filter(
   (provider) => provider?.name !== "Credentials",
 )
 
-const credentials = ref({
-  email: "",
-  password: "",
+const isValidEmail = computed(() => {
+  return credentials.email.includes("@")
 })
 
-const handleSubmit = async (): Promise<void> => {
-  error.value = ""
-  if (!credentials.value.email || !credentials.value.password) {
-    error.value = "Please add your information"
-    return
-  }
-
-  if (!navigator.onLine) {
-    // Register a sync event
-    const registration = await navigator.serviceWorker.ready
-    await registration.sync.register("syncForm", {
-      email: credentials.value.email,
-      password: credentials.value.password,
-    })
-
-    if ("indexedDB" in window) {
-      const db: IDBDatabase = await indexedDB.open("recwide_db", 1, {
-        upgrade(db) {
-          db.createObjectStore("forms")
-        },
-      })
-
-      db.onsuccess = function (event: Event): void {
-        const target = event.target as IDBOpenDBRequest
-
-        const tx = target.result.transaction("forms", "readwrite")
-        const store = tx.objectStore("forms")
-        store.put({
-          email: credentials.value.email,
-          password: credentials.value.password,
-        })
-
-        tx.oncomplete = function (): void {
-          console.log("Form data saved locally.")
-        }
-
-        tx.onerror = function (): void {
-          console.log("Form data not saved locally.")
-        }
-
-        console.log("Form data saved locally and sync event registered.")
-      }
-
-      console.log("Form data saved locally and sync event registered.")
-    }
-    console.log("Form data saved locally and sync event registered.")
-  } else {
-    loading.value = true
-
-    try {
-      const result = await signIn("credentials", {
-        redirect: true,
-        email: credentials.value.email,
-        password: credentials.value.password,
-      })
-      console.log("User logged in successfully.", result)
-      if (result && result.error) {
-        error.value = result.error
-        return
-      }
-      router.push("/")
-    } catch (err) {
-      console.log("Error logging in.", err)
-      const serverError = err as Error
-      error.value = serverError.message || "An error occurred"
-    } finally {
-      loading.value = false
-    }
-  }
-}
+const isValidPassword = computed(() => {
+  return credentials.password.length > 0
+})
 </script>
 
 <template>
   <div
-    class="flex items-center justify-center flex-col w-full max-w-md mx-auto mt-6 sm:mt-20 bg-gray-50 dark:bg-transparent p-8 rounded-lg border"
+    class="flex items-center justify-center flex-col w-full max-w-lg mx-auto mt-6 sm:mt-20 p-8 rounded-lg dark:bg-transparent"
   >
     <form
       ref="login"
@@ -102,48 +33,59 @@ const handleSubmit = async (): Promise<void> => {
       @submit.prevent="handleSubmit"
     >
       <h1 class="title">Login</h1>
-      <p class="text-gray-400 text-xs mb-3 mt-1">Login to your account</p>
+      <p class="text-gray-400 text-xs mt-1 mb-8">Login to your account</p>
       <shared-error-message :error="error" />
-
-      <div class="form-group">
-        <input
+      <div
+        class="mb-2 mt-2 rounded-md relative transition duration-10 00 text-xs min-h-22"
+      >
+        <ui-input-field
           id="login-email-client"
           v-model="credentials.email"
           type="email"
           name="email"
-          class="input"
-          placeholder="Add Your Email Address..."
-          autocomplete="false | unknown-autocomplete-value"
-          tabindex="1"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          label="Email Address"
           title="Please enter a valid email address"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          tabindex="1"
+          :styles="{
+            inputField: `${isValidEmail ? ' rounded-b-none border-b' : ''}`,
+          }"
         />
-      </div>
-
-      <div class="form-group">
-        <input
+        <ui-input-field
           id="login-password-client"
           v-model="credentials.password"
           type="password"
           name="password"
-          class="input"
-          placeholder="Write Your Password..."
-          autocomplete="false | unknown-autocomplete-value"
+          label="Password"
+          title="Please enter a valid password"
           tabindex="2"
+          :styles="{
+            input: `${isValidPassword ? 'pt-8' : ''}`,
+            inputField: `rounded-t-none  ${!isValidEmail ? ' -translate-y-full -z-10 hidden' : ''}`,
+          }"
         />
+        <button
+          :class="`w-8 h-8 absolute right-2 bottom-2 border rounded-full text-center  grid place-items-center cursor-pointer hover:opacity-90 hover:shadow ${isValidEmail && isValidPassword ? ' border-primary-300 bg-primary-300 text-white' : 'bg-gray-50 text-gray-300'}`"
+          type="submit"
+          :disabled="!isValidEmail || !isValidPassword || loading"
+          @click.prevent="handleSubmit"
+        >
+          <UIcon
+            v-if="!loading"
+            name="i-heroicons-arrow-right"
+            class="w-4 h-4"
+          />
+          <UIcon
+            v-else
+            name="i-heroicons-arrow-path-solid"
+            class="w-4 h-4 animate-spin"
+          />
+        </button>
       </div>
 
-      <div class="toggle-forms mb-2 text-sm dark:text-gray-200">
-        You don't have an account
-        <router-link
-          tabindex="3"
-          class="font-semibold underline"
-          to="/auth/signup"
-        >
-          Signup
-        </router-link>
-      </div>
-      <div class="toggle-forms mb-2 text-sm dark:text-gray-200">
+      <div
+        class="toggle-forms mb-6 text-[10px] dark:text-gray-200 text-gray-600"
+      >
         Forgot your password
         <router-link
           tabindex="3"
@@ -153,16 +95,15 @@ const handleSubmit = async (): Promise<void> => {
           Reset Password
         </router-link>
       </div>
-      <div>
-        <button
-          type="submit"
-          class="btn btn-small bg-theme disabled:opacity-50"
-          :disabled="loading"
-          tabindex="4"
-          @click.prevent="handleSubmit"
+      <div class="toggle-forms mb-6 text-xs dark:text-gray-200">
+        You don't have an account
+        <router-link
+          tabindex="3"
+          class="font-semibold underline"
+          to="/auth/signup"
         >
-          Login
-        </button>
+          Signup
+        </router-link>
       </div>
     </form>
     <div

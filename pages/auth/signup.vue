@@ -1,77 +1,22 @@
 <script setup lang="ts">
-import { RESOURCES } from "~/utils/constants/resources.enum"
-
 definePageMeta({
   auth: { unauthenticatedOnly: true, navigateAuthenticatedTo: "/" },
 })
 const { getProviders, signIn } = useAuth()
-const router = useRouter()
 
 const providers = await getProviders()
+
 const mappedProviders = Object.values(providers).filter(
   (provider) => provider?.name !== "Credentials",
 )
 
-const credentials = ref({
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-})
-const fieldTypes = reactive({
-  password: "password",
-  confirmPassword: "password",
-}) as { [key: string]: string }
-
-const error = ref("")
-const success = ref("")
-const loading = ref(false)
-
-const handleSubmit = async (): Promise<void> => {
-  error.value = ""
-  if (
-    !credentials.value.name ||
-    !credentials.value.email ||
-    !credentials.value.password
-  ) {
-    error.value = "Please add your information"
-    return
-  }
-
-  if (credentials.value.password !== credentials.value.confirmPassword) {
-    error.value = "Passwords do not match"
-    return
-  }
-  loading.value = true
-  try {
-    const response = await fetch(RESOURCES.AUTH_REGISTER_USER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...credentials.value, provider: "credentials" }),
-    })
-
-    const data = await response.json()
-    if (!response.ok) {
-      error.value = data.message
-      return
-    }
-    success.value = data.message
-
-    router.push(data.body.redirect)
-  } catch (err) {
-    const serverError = err as Error
-    error.value = serverError.message || "An error occurred"
-  } finally {
-    loading.value = false
-  }
-}
+const { handleSubmit, credentials, fieldTypes, error, success, loading } =
+  useRegister()
 </script>
 
 <template>
   <div
-    class="flex items-center justify-center flex-col w-full max-w-md mx-auto mt-6 sm:mt-18 bg-gray-50 dark:bg-transparent p-8 rounded-lg border"
+    class="flex items-center justify-center flex-col w-full max-w-md mx-auto mt-6 sm:mt-18 p-8 rounded-lg"
   >
     <form
       ref="signup"
@@ -87,58 +32,51 @@ const handleSubmit = async (): Promise<void> => {
       </p>
       <shared-error-message :error="error" />
       <shared-success-message :message="success ? `${success}` : undefined" />
-
-      <div class="form-group">
-        <input
-          id="name-client"
+      <div class="grid gap-y-4">
+        <ui-input-field
+          id="register-name-client"
           v-model="credentials.name"
-          type="text"
-          name="input-account"
-          class="input"
-          placeholder="Add Your Name..."
+          :type="fieldTypes.name"
+          name="name"
+          label="Name"
           title="Please enter your name"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
           tabindex="1"
         />
-      </div>
-
-      <div class="form-group">
-        <input
-          id="email-client"
+        <ui-input-field
+          id="register-email-client"
           v-model="credentials.email"
-          type="email"
-          name="input-account-connection"
-          class="input"
-          placeholder="Add Your Email address..."
+          :type="fieldTypes.email"
+          name="email"
+          label="Email Address"
           title="Please enter a valid email address"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
           tabindex="2"
+          :styles="{ inputField: 'bg-red-400' }"
         />
-      </div>
 
-      <div class="form-group">
-        <input
-          id="password-client"
+        <ui-input-field
+          id="login-password-client"
           v-model="credentials.password"
           :type="fieldTypes.password"
           name="password"
-          class="input"
-          placeholder="Write Your Password..."
+          label="Password"
+          title="Please enter a valid password"
           tabindex="3"
         />
-      </div>
 
-      <div class="form-group">
-        <input
-          id="confirm-password-client"
+        <ui-input-field
+          id="login-confirm-password-client"
           v-model="credentials.confirmPassword"
           :type="fieldTypes.confirmPassword"
           name="confirmPassword"
-          class="input"
-          placeholder="Confirm Your Password..."
+          label="Confirm Password"
+          title="Please enter a valid and matching password"
           tabindex="4"
         />
       </div>
 
-      <div class="toggle-forms mb-2 text-sm dark:text-gray-200">
+      <div class="toggle-forms mb-2 text-xs dark:text-gray-200">
         Already have an account
         <router-link
           class="font-semibold underline"

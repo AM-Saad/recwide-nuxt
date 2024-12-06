@@ -12,6 +12,7 @@ const config = useRuntimeConfig()
 
 export default NuxtAuthHandler({
   secret: config.public.AUTH_SECRET,
+  debug: true,
   providers: [
     // @ts-expect-error Use .default here for it to work during SSR.
     GoogleProvider.default({
@@ -37,13 +38,15 @@ export default NuxtAuthHandler({
       }): Promise<unknown> {
         // Add logic to verify credentials here
         if (!credentials) {
-          throw new Error("Invalid Credentials - Email Not Provided")
+          //  throw new Error("Invalid Credentials - Email Not Provided")
+          return null
         }
         const { email, password } = credentials
         // Fetch user and password hash from your database
         const user = await prisma.users.findUnique({ where: { email } })
+        console.log("authorize -> user exist", user?.email)
         if (!user) {
-          throw new Error("Invalid Credentials - Email Not Registered")
+          throw new Error("Invalid Credentials - User Not Found")
         }
 
         if (!user.email_verified) {
@@ -81,7 +84,7 @@ export default NuxtAuthHandler({
         const valid = await bcrypt.compare(password, user.password)
         console.log("authorize -> valid", valid)
         if (!valid) {
-          throw new Error("Invalid password")
+          throw new Error("Invalid Credentials - Password Incorrect")
         }
         // If the password is valid, return the user object
         console.log("authorize -> user", user)
@@ -93,13 +96,13 @@ export default NuxtAuthHandler({
   pages: {
     signIn: "/auth/signIn",
     signOut: "/auth/signOut",
-    error: "/auth/error",
+    //  error: "/auth/signIn",
     verifyRequest: "/auth/verify-request",
     newUser: "/auth/new-user",
   },
   events: {
     signIn: async (params) => {
-      // console.log("Event -> signIn", params)
+      console.log("Event -> signIn", params)
       const { email, name } = params.user
       if (params.account && params.account.provider === "google" && email) {
         try {
@@ -126,27 +129,31 @@ export default NuxtAuthHandler({
           provider: "google",
         })
       }
+      console.log("Event -> signIn", params)
     },
     signOut: async (message): Promise<void> => {
       console.log("signOut", message)
     },
-    createUser: async (): Promise<void> => {
-      // console.log("createUser", message)
-    },
-    updateUser: async (): Promise<void> => {
-      // console.log("updateUser", message)
-    },
-    linkAccount: async (): Promise<void> => {
-      // console.log("linkAccount", message)
-    },
-    session: async (message): Promise<void> => {
-      console.log("Event -> session", message)
-    },
+    //  createUser: async (): Promise<void> => {
+    //    // console.log("createUser", message)
+    //  },
+    //  updateUser: async (): Promise<void> => {
+    //    // console.log("updateUser", message)
+    //  },
+    //  linkAccount: async (): Promise<void> => {
+    //    // console.log("linkAccount", message)
+    //  },
+    //  session: async (message): Promise<void> => {
+    //    console.log("Event -> session", message)
+    //  },
   },
   callbacks: {
-    redirect(params) {
-      console.log("callbacks -> redirect -> params", params)
-      return "/"
+    async signIn({ user, account, credentials }) {
+      console.log("callbacks -> signIn -> user", user)
+      if (!user) {
+        return "/auth/error?error=UserNotFound" // Redirect to error page
+      }
+      return true // Proceed with login
     },
     //  async jwt({ token, user, account }) {
     //    console.log("callbacks -> jwt -> token", token)
@@ -260,22 +267,22 @@ export default NuxtAuthHandler({
       }
     },
 
-    async signIn(params) {
-      // console.log("callback signIn -> params", params)
-      return true
-      // const profile = params.profile as GoogleProfile
-      // const account = params.account as Account
-      // const email = params.email as { verificationRequest: boolean }
-      // console.log("callback signIn -> account", account)
-      // console.log("callback signIn -> profile", profile)
-      // if (account && account.provider === "google") {
-      //   console.log(
-      //     "callback signIn -> account -> email_verified",
-      //     profile.email_verified,
-      //   )
-      //   //   return profile && profile.email_verified
-      // }
-      // return true // Do different verification for other providers that don't have `email_verified`
-    },
+    //  async signIn(params) {
+    //    console.log("callback signIn -> params", params)
+    //    return true
+    //    // const profile = params.profile as GoogleProfile
+    //    // const account = params.account as Account
+    //    // const email = params.email as { verificationRequest: boolean }
+    //    // console.log("callback signIn -> account", account)
+    //    // console.log("callback signIn -> profile", profile)
+    //    // if (account && account.provider === "google") {
+    //    //   console.log(
+    //    //     "callback signIn -> account -> email_verified",
+    //    //     profile.email_verified,
+    //    //   )
+    //    //   //   return profile && profile.email_verified
+    //    // }
+    //    // return true // Do different verification for other providers that don't have `email_verified`
+    //  },
   },
 })
